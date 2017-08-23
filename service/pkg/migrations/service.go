@@ -5,6 +5,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/mattes/migrate"
 	_ "github.com/mattes/migrate/database/postgres"
+	_ "github.com/mattes/migrate/source/file"
 )
 
 type MigrationService struct {
@@ -27,7 +28,12 @@ func (ms *MigrationService) Up() (error, bool) {
 	if err != nil {
 		return err, false
 	}
-	m.Up()
+
+	err = m.Up()
+	if err != nil {
+		return err, false
+	}
+
 	// unlock result must not affect migration run result, but may cause more errors
 	if err := ms.semaphore.Unlock(repo.SemaphoreMigrations); err != nil {
 		return err, false

@@ -1,4 +1,4 @@
-CREATE TYPE auction_status ENUM ('running', 'scheduled', 'completed')
+CREATE TYPE auction_status AS ENUM ('running', 'scheduled', 'completed');
 
 CREATE TABLE "public"."auctions" (
     "id" UUID,

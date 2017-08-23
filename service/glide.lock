@@ -1,6 +1,8 @@
-hash: 3d8ff928aff2416af2ae261ef564867aa853184f80215bd5385b519b27420d12
-updated: 2017-08-23T13:56:08.741539234+02:00
+hash: 697833688fa5d5019178e65ce77dcaca43ef5f7d70750241aa3918c49a6e21f2
+updated: 2017-08-23T14:22:52.037856672+02:00
 imports:
+- name: github.com/go-chi/chi
+  version: ba73ba0623af32e4e5f09880177e73bd78d98852
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/jmoiron/sqlx
@@ -19,6 +21,7 @@ imports:
   - database
   - database/postgres
   - source
+  - source/file
 - name: github.com/sirupsen/logrus
   version: f006c2ac4710855cf0f916dd6b77acf6b048dc6e
 - name: github.com/spf13/cobra
