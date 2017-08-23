@@ -30,7 +30,7 @@ func (ms *MigrationService) Up() (error, bool) {
 	}
 
 	err = m.Up()
-	if err != nil {
+	if err != nil && err != migrate.ErrNoChange {
 		return err, false
 	}
 
