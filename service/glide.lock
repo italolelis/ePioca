@@ -1,8 +1,10 @@
-hash: 697833688fa5d5019178e65ce77dcaca43ef5f7d70750241aa3918c49a6e21f2
-updated: 2017-08-23T14:22:52.037856672+02:00
+hash: fc07494dfbcf3d1b0b703d8154c1215287872a871ee17a892f6c88de0077627d
+updated: 2017-08-23T14:29:27.747913184+02:00
 imports:
 - name: github.com/go-chi/chi
   version: ba73ba0623af32e4e5f09880177e73bd78d98852
+  subpackages:
+  - middleware
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/jmoiron/sqlx
