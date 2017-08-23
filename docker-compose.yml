@@ -6,4 +6,4 @@ services:
         ports:
             - "8116:8080"
         volumes:
-            - web/:/server/http
+            - ./web:/server/http
