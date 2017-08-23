@@ -19,9 +19,9 @@ services:
     postgres:
         image: postgres:9.6
         ports:
-            - '8117:5432'
+            - '5432:5432'
         environment:
             LC_ALL: C.UTF-8
-            POSTGRES_USER: myuser
-            POSTGRES_PASSWORD: mypass
+            POSTGRES_USER: epioca
+            POSTGRES_PASSWORD: epioca
             POSTGRES_DB: epioca
