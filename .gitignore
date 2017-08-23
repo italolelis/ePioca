@@ -27,7 +27,7 @@ overalls.coverprofile
 gin-bin
 
 _book
-/vendor
+vendor/
 node_modules/
 
 # HF config files

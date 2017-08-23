@@ -1,0 +1,14 @@
+hash: 96e47415a45145b503bd875664dee59aeab6528948be5d86246c3fc7ff011ca4
+updated: 2017-08-23T11:11:08.998053961+02:00
+imports:
+- name: github.com/inconshreveable/mousetrap
+  version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
+- name: github.com/kelseyhightower/envconfig
+  version: f611eb38b3875cc3bd991ca91c51d06446afa14c
+- name: github.com/sirupsen/logrus
+  version: f006c2ac4710855cf0f916dd6b77acf6b048dc6e
+- name: github.com/spf13/cobra
+  version: 8c6fa02d2225de0f9bdcb7ca912556f68d172d8c
+- name: github.com/spf13/pflag
+  version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
+testImports: []
