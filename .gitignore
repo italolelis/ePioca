@@ -31,5 +31,5 @@ vendor/
 node_modules/
 
 # HF config files
-/dist
+dist/
 debug
