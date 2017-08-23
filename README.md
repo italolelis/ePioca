@@ -138,13 +138,13 @@ Instructions.....
             "auction_id" : 123,
             "user_id" : 456,
             "threshold" : 40,
-            "price" : 230.50
+            "value" : 230.50
         },
         {
             "auction_id" : 234,
             "user_id" : 456,
             "threshold" : 50,
-            "price" : 250.10
+            "value" : 250.10
         }
     ],
     "status": 200 
@@ -159,7 +159,7 @@ Instructions.....
             "auction_id" : 123,
             "user_id" : 456,
             "threshold" : 40,
-            "price" : 230.50
+            "value" : 230.50
         }
     ],
     "status": 200
@@ -171,7 +171,7 @@ Instructions.....
 {
     "user_id" : 456,
     "threshold" : 40,
-    "price" : 230.50
+    "value" : 230.50
 } 
 ```
 
@@ -180,7 +180,7 @@ Instructions.....
 {
     "user_id" : 456,
     "threshold" : 20,
-    "price" : 230.50
+    "value" : 230.50
 } 
 ```
 
@@ -193,17 +193,17 @@ Instructions.....
         {
             "user_id" : 456,
             "position" : 1,
-            "price" : 230.50
+            "value" : 230.50
         },
         {
             "user_id" : 456,
             "position" : 2,
-            "price" : 333.50
+            "value" : 333.50
         },
         {
             "user_id" : 456,
             "position" : 3,
-            "price" : 555
+            "value" : 555
         },
     ],
     "status": 200 
