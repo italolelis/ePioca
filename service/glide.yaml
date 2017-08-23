@@ -1,4 +1,4 @@
-package: github.com/italolelis/ePioca/service
+package: github.com/italolelis/epioca/service
 import:
 - package: github.com/spf13/cobra
 - package: github.com/sirupsen/logrus
