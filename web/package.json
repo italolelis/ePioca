@@ -1,0 +1,14 @@
+{
+  "name": "epioca",
+  "version": "0.0.1",
+  "description": "",
+  "main": "public/index.js",
+  "scripts": {
+    "start": "nodemon -L --watch src --watch web --watch cli web/index.js"
+  },
+  "dependencies": {
+    "hapi": "^16.1.0",
+    "request": "^2.79.0",
+    "router": "^1.2.0"
+  }
+}
