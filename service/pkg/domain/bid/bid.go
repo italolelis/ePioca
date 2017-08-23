@@ -16,7 +16,7 @@ type Repository interface {
 // Bid represents a supplier bid to an auction
 type Bid struct {
 	ID        uuid.UUID `json:"id" db:"id"`
-	AuctionID uuid.UUID `json:"_" db:"auction_id"`
+	AuctionID uuid.UUID `json:"-" db:"auction_id"`
 	UserID    uuid.UUID `json:"user_id" db:"user_id"`
 	Threshold int       `json:"threshold" db:"threshold"`
 	Value     float32   `json:"value" db:"value"`
