@@ -1,7 +1,5 @@
 package repo
 
-<<<<<<< HEAD
-=======
 import (
 	"github.com/italolelis/epioca/service/pkg/domain/auction"
 	"github.com/jmoiron/sqlx"
@@ -40,4 +38,3 @@ func (r *auctionRepo) Add(auction *auction.Auction) error {
 func (r *auctionRepo) Remove(id uuid.UUID) error {
 	return nil
 }
->>>>>>> 90faa0f71b9bc20ac2f43c8b625005bcf15122ed
