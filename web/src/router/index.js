@@ -13,6 +13,7 @@ const router = new Router({
         {
             path: '/',
             name: 'Hello',
+            meta: { requiresAuth: true },
             component: Hello
         },
         {
@@ -23,7 +24,8 @@ const router = new Router({
         {
             path: '/auction',
             name: 'Auction',
-            component: Auction
+            component: Auction,
+            meta: { requiresAuth: true }
         }
     ]
 });
