@@ -103,3 +103,51 @@ Instructions.....
     "max_price" : 5000
 }
 ```
+
+### Bid
+
+`GET /auctions/{ID}/bids`
+```json
+{
+    "data": [
+        {
+            "auction_id" : 123,
+            "user_id" : 456,
+            "threshold" : 40,
+            "price" : 230.50
+        },
+        {
+            "auction_id" : 234,
+            "user_id" : 456,
+            "threshold" : 50,
+            "price" : 250.10
+        }
+    ],
+    "status": 200 
+}
+```
+
+`GET /auctions/{ID}/bids/{bidID}`
+```json
+{
+    "data": [
+        {
+            "auction_id" : 123,
+            "user_id" : 456,
+            "threshold" : 40,
+            "price" : 230.50
+        }
+    ],
+    "status": 200
+}
+```
+
+`POST /auctions/{ID}/bids`
+```json
+{
+    "auction_id" : 123,
+    "user_id" : 456,
+    "threshold" : 40,
+    "price" : 230.50
+} 
+```
