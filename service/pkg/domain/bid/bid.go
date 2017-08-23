@@ -21,3 +21,8 @@ type Bid struct {
 	Threshold int       `json:"threshold" db:"threshold"`
 	Value     float32   `json:"value" db:"value"`
 }
+
+// NewBid creates a new instance of Bid
+func NewBid(id uuid.UUID) *Bid {
+	return &Bid{ID: id}
+}

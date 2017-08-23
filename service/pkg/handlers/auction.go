@@ -25,7 +25,7 @@ func NewAuction(repo auction.Repository) *Auction {
 func (h *Auction) Index(w http.ResponseWriter, r *http.Request) {
 	auctions, err := h.repo.FindAll()
 	if err != nil {
-		JSON(w, http.StatusInternalServerError, "Failed during searching locales")
+		JSON(w, http.StatusInternalServerError, "Failed during searching auctions")
 		return
 	}
 
