@@ -81,6 +81,18 @@ func (r *BidRepo) FindLowest(auctionID uuid.UUID) (*bid.Bid, error) {
 
 // Add func
 func (r *BidRepo) Add(bid *bid.Bid) error {
+
+	query := `
+		INSERT INTO
+			bids
+		VALUES (:id, :auction_id, :user_id, :threshold, :value)
+	`
+	_, err := r.db.NamedExec(query, &bid)
+
+	if err != nil {
+		return errors.Wrap(err, "Insert a bid")
+	}
+
 	return nil
 }
 

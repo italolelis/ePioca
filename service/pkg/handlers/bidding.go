@@ -76,7 +76,7 @@ func (h *Bidding) Create(w http.ResponseWriter, r *http.Request) {
 
 	if err := h.repo.Add(bid); err != nil {
 		log.WithError(err).Error("Failed to create a bid")
-		JSON(w, http.StatusInternalServerError, "FFailed to create a bid")
+		JSON(w, http.StatusInternalServerError, "Failed to create a bid")
 		return
 	}
 
