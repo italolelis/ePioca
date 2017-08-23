@@ -9,6 +9,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/italolelis/epioca/service/pkg/config"
+	"github.com/italolelis/epioca/service/pkg/handlers"
 	"github.com/italolelis/epioca/service/pkg/migrations"
 	"github.com/italolelis/epioca/service/pkg/repo"
 	"github.com/jmoiron/sqlx"
@@ -51,16 +52,18 @@ func init() {
 func RunServer(cmd *cobra.Command, args []string) {
 	log.WithField("dsn", globalConfig.Database.DSN).Info("Trying to connect to DB")
 	db, err := sqlx.Connect("postgres", globalConfig.Database.DSN)
-	FailOnError(err, "Failed to connect to DB")
+	failOnError(err, "Failed to connect to DB")
 	defer db.Close()
 
 	log.WithField("path", globalConfig.Database.MigrationsPath).Info("Running migrations")
 	semaphoreRepo := repo.NewSemaphore(db)
 	migrationService := migrations.NewMigrationService(semaphoreRepo, globalConfig.Database.DSN, globalConfig.Database.MigrationsPath)
 	err, _ = migrationService.Up()
-	FailOnError(err, "Could not run migrations")
+	failOnError(err, "Could not run migrations")
 
 	r := initRouter()
+	initAuctionRoutes(r, db)
+
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", globalConfig.Port), r))
 }
 
@@ -75,7 +78,18 @@ func initRouter() chi.Router {
 	return r
 }
 
-func FailOnError(err error, msg string) {
+func initAuctionRoutes(r chi.Router, db *sqlx.DB) {
+	handler := handlers.NewAuction(repo.NewAuction(db))
+	r.Route("/auctions", func(r chi.Router) {
+		r.Get("/", handler.Index)
+		r.Post("/", handler.Create)
+		r.Get("/{id}", handler.Show)
+		r.Put("/{id}", handler.Update)
+		r.Delete("/{id}", handler.Remove)
+	})
+}
+
+func failOnError(err error, msg string) {
 	if err != nil {
 		log.WithError(err).Panic(msg)
 	}
