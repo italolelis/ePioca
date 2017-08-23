@@ -37,21 +37,21 @@ func (r *BidRepo) FindByAuction(auctionID uuid.UUID) ([]*bid.Bid, error) {
 }
 
 // FindByUser func
-func FindByUser(userID uuid.UUID) ([]*bid.Bid, error) {
+func (r *BidRepo) FindByUser(userID uuid.UUID) ([]*bid.Bid, error) {
 	return nil, nil
 }
 
 // FindLowest func
-func FindLowest(auctionID uuid.UUID) (*bid.Bid, error) {
+func (r *BidRepo) FindLowest(auctionID uuid.UUID) (*bid.Bid, error) {
 	return nil, nil
 }
 
 // Add func
-func Add(bid *bid.Bid) error {
+func (r *BidRepo) Add(bid *bid.Bid) error {
 	return nil
 }
 
 // Remove func
-func Remove(id uuid.UUID) error {
+func (r *BidRepo) Remove(id uuid.UUID) error {
 	return nil
 }

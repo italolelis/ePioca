@@ -1,15 +1,19 @@
 package auction
 
-import uuid "github.com/satori/go.uuid"
-import "time"
+import (
+	"time"
+
+	"github.com/lib/pq"
+	uuid "github.com/satori/go.uuid"
+)
 
 const (
 	//Running status
-	Running Status = "running"
+	Running string = "running"
 	//Scheduled status
-	Scheduled Status = "scheduled"
+	Scheduled string = "scheduled"
 	//Completed status
-	Completed Status = "completed"
+	Completed string = "completed"
 )
 
 //Status represents the auction status
@@ -26,7 +30,7 @@ type Repository interface {
 // Auction represents an auction
 type Auction struct {
 	ID         uuid.UUID     `json:"id" db:"id"`
-	Status     Status        `json:"status" db:"status"`
+	Status     string        `json:"status" db:"status"`
 	Week       string        `json:"week" db:"week"`
 	Country    string        `json:"country" db:"country"`
 	DC         string        `json:"dc" db:"dc"`
@@ -35,7 +39,7 @@ type Auction struct {
 	StartDate  time.Time     `json:"start_date" db:"start_date"`
 	EndDate    time.Time     `json:"end_date" db:"end_date"`
 	Qty        float32       `json:"qty" db:"qty"`
-	Threshold  []int         `json:"threshold" db:"threshold"`
+	Threshold  pq.Int64Array `json:"threshold" db:"threshold"`
 	MaxPrice   float32       `json:"max_price" db:"max_price"`
 }
 

@@ -33,13 +33,13 @@ func (r *auctionRepo) FindAll() ([]*auction.Auction, error) {
 
 // Find returns one auction by id
 func (r *auctionRepo) Find(id uuid.UUID) (*auction.Auction, error) {
-	var auction *auction.Auction
+	var auction auction.Auction
 
-	if err := r.db.Select(&auction, "SELECT * FROM $1 WHERE id = $2", auctionTableName, id); err != nil {
-		return auction, errors.Wrap(err, "Get One auction by id")
+	if err := r.db.Get(&auction, "SELECT * FROM auctions WHERE id = $1", id); err != nil {
+		return &auction, errors.Wrap(err, "Get One auction by id")
 	}
 
-	return auction, nil
+	return &auction, nil
 }
 
 // Add upserts auction into storage

@@ -43,7 +43,7 @@ func (h *Auction) Show(w http.ResponseWriter, r *http.Request) {
 
 	auctions, err := h.repo.Find(id)
 	if err != nil {
-		JSON(w, http.StatusNotFound, "Failed during searching locales")
+		JSON(w, http.StatusNotFound, "Failed during searching auctions")
 		return
 	}
 
@@ -52,20 +52,21 @@ func (h *Auction) Show(w http.ResponseWriter, r *http.Request) {
 
 // Create handler to create an auction
 func (h *Auction) Create(w http.ResponseWriter, r *http.Request) {
-	auction := auction.NewAuction(uuid.NewV4())
-	if err := json.NewDecoder(r.Body).Decode(auction); err != nil {
+	act := auction.NewAuction(uuid.NewV4())
+	if err := json.NewDecoder(r.Body).Decode(act); err != nil {
 		log.WithError(err).Warn("Failed to decode body request during creating an auction")
 		JSON(w, http.StatusBadRequest, "Failed to decode body request")
 		return
 	}
 
-	if err := h.repo.Add(auction); err != nil {
+	act.Status = auction.Running
+	if err := h.repo.Add(act); err != nil {
 		log.WithError(err).Error("Failed to create an auction")
 		JSON(w, http.StatusInternalServerError, "FFailed to create an auction")
 		return
 	}
 
-	w.Header().Set("Location", fmt.Sprintf("/auctions/%s", auction.ID))
+	w.Header().Set("Location", fmt.Sprintf("/auctions/%s", act.ID))
 	w.WriteHeader(http.StatusCreated)
 }
 
