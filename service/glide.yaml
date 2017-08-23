@@ -11,3 +11,5 @@ import:
 - package: github.com/go-chi/chi
   version: ^3.2.0
 - package: github.com/lib/pq
+- package: github.com/satori/go.uuid
+  version: ^1.1.0
