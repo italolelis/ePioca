@@ -1,7 +1,7 @@
 FROM alpine
 
 ADD build/ca-certificates.crt /etc/ssl/certs/
-ADD dist/epioca-amd64 /
+ADD dist/epioca_linux-amd64 /
 
 RUN apk add --update curl && \
     rm -rf /var/cache/apk/*
@@ -9,4 +9,4 @@ RUN apk add --update curl && \
 # HEALTHCHECK --interval=5s --timeout=5s --retries=3 CMD curl -f http://localhost:8081/status || exit 1
 
 EXPOSE 8080
-ENTRYPOINT ["/epioca-amd64"]
+ENTRYPOINT ["/epioca_linux-amd64"]
