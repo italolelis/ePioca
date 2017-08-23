@@ -7,7 +7,7 @@ services:
         environment: 
             PORT: 8080
             LOG_LEVEL: "debug"
-            DATABASE_DSN: "postgres://epioca:epioca@postgres/epioca"
+            DATABASE_DSN: "postgres://epioca:epioca@postgres/epioca?sslmode=disable"
             MIGRATIONS_PATH: "file://migrations"
         ports:
             - "8115:8080"
