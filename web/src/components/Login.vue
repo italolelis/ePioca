@@ -1,9 +1,10 @@
 <template>
     <div class="container">
         <p align="center">
-            <img src="https://cdn.hellofresh.com/de/cms/press/HelloFresh_Logo.png?v=2016" width="200">
+            <img src="https://cdn.hellofresh.com/de/cms/press/HelloFresh_Logo.png?v=2016" width="150">
         </p>
-        <form class="form-horizontal" method="POST" action="/login">
+
+        <form class="form-horizontal"  @submit.prevent="attemptLogin({ username, password })">
             <div class="row">
                 <div class="col-md-3"></div>
                 <div class="col-md-6">
@@ -11,63 +12,44 @@
                     <hr>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
+                    <div class="alert alert-danger" v-if="showLoginError">
+                        Invalid username or password
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-md-3"></div>
                 <div class="col-md-6">
                     <div class="form-group has-danger">
-                        <label class="sr-only" for="email">E-Mail Address</label>
                         <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                            <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-at"></i></div>
-                            <input name="email" class="form-control" id="email"
-                                   placeholder="you@example.com" required autofocus>
+                            <div class="input-group-addon"><i class="fa fa-at"></i></div>
+                            <input name="username" class="form-control" v-model="username" placeholder="Username" required autofocus>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div style="" class="form-control-feedback">
-                        <span class="text-danger align-middle">
-                            <i class="fa fa-close"></i> Example error message
-                        </span>
-                    </div>
-                </div>
             </div>
+
             <div class="row">
                 <div class="col-md-3"></div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label class="sr-only" for="password">Password</label>
                         <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                            <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-key"></i></div>
-                            <input type="password" name="password" class="form-control" id="password"
-                                   placeholder="Password" required>
+                            <div class="input-group-addon"><i class="fa fa-key"></i></div>
+                            <input type="password" class="form-control" v-model="password" placeholder="Password" required>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="form-control-feedback">
-                        <span class="text-danger align-middle">
-                        <!-- Put password error message here -->
-                        </span>
-                    </div>
-                </div>
             </div>
+
             <div class="row">
                 <div class="col-md-3"></div>
-                <div class="col-md-6" style="padding-top: .35rem">
-                    <div class="form-check mb-2 mr-sm-2 mb-sm-0">
-                        <label class="form-check-label">
-                            <input class="form-check-input" name="remember"
-                                   type="checkbox" >
-                            <span style="padding-bottom: .15rem">Remember me</span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="row" style="padding-top: 1rem">
-                <div class="col-md-3"></div>
                 <div class="col-md-6">
-                    <button type="submit" class="btn btn-success"><i class="fa fa-sign-in"></i> Login</button>
-                    <a class="btn btn-link" href="/password/reset">Forgot Your Password?</a>
+                    <button type="submit" class="btn btn-success btn-block"><i class="fa fa-sign-in"></i> Login</button>
                 </div>
             </div>
         </form>
@@ -75,9 +57,35 @@
 </template>
 
 <script>
+import { login } from '@/api/auth'
+import { setAccessToken } from '@/api'
 
+export default {
+    data() {
+        return {
+            username: '',
+            password: '',
+            showLoginError: false
+        }
+    },
+
+    methods: {
+        attemptLogin({ username, password }) {
+            const redirectTo = this.$route.query.redirect ? this.$route.query.redirect : '/';
+
+            login(username, password)
+                .then(({ data }) => {
+                    setAccessToken(data.access_token)
+                    this.$router.push(redirectTo)
+                })
+                .catch(() => this.showLoginError = true)
+        }
+    }
+}
 </script>
 
 <style scoped>
-
+.container {
+    margin-top: 4rem;
+}
 </style>

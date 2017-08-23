@@ -1,5 +1,4 @@
-// Stub to simulate being logged out
-const getAccessToken = () => false
+import { getAccessToken } from '@/api'
 
 const middleware = (to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
