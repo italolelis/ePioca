@@ -178,3 +178,29 @@ Instructions.....
     "price" : 230.50
 } 
 ```
+
+### Auction positions
+
+`GET /auctions/{ID}/positions`
+```json
+{
+    "data": [
+        {
+            "user_id" : 456,
+            "position" : 1,
+            "price" : 230.50
+        },
+        {
+            "user_id" : 456,
+            "position" : 2,
+            "price" : 333.50
+        },
+        {
+            "user_id" : 456,
+            "position" : 3,
+            "price" : 555
+        },
+    ],
+    "status": 200 
+}
+```
