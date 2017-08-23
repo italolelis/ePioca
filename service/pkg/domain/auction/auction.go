@@ -38,3 +38,13 @@ type Auction struct {
 	Threshold  []int         `json:"threshold" db:"threshold"`
 	MaxPrice   float32       `json:"max_price" db:"max_price"`
 }
+
+// NewAuction creates a new instance of auction
+func NewAuction(id uuid.UUID) *Auction {
+	return &Auction{ID: id}
+}
+
+// IsScheduled verifies if an auction is scheduled
+func (a *Auction) IsScheduled() bool {
+	return a.Status == Scheduled
+}
