@@ -151,35 +151,11 @@ Instructions.....
 }
 ```
 
-`GET /auctions/{ID}/bids/{bidID}`
-```json
-{
-    "data": [
-        {
-            "auction_id" : 123,
-            "user_id" : 456,
-            "threshold" : 40,
-            "value" : 230.50
-        }
-    ],
-    "status": 200
-}
-```
-
 `POST /auctions/{ID}/bids`
 ```json
 {
     "user_id" : 456,
     "threshold" : 40,
-    "value" : 230.50
-} 
-```
-
-`PUT /auctions/{ID}/bids/{bidID}`
-```json
-{
-    "user_id" : 456,
-    "threshold" : 20,
     "value" : 230.50
 } 
 ```
