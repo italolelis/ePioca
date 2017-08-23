@@ -25,6 +25,7 @@ Instructions.....
         {
             "status" : "completed/scheduled/running",
             "week" : "2016-W10",
+            "country" : "US",
             "dc" : "TX",
             "ingredient" : "PHF-10-10008-4",
             "duration" : 3600,
@@ -50,6 +51,7 @@ Instructions.....
         {
             "status" : "running",
             "week" : "2016-W10",
+            "country" : "US",
             "dc" : "TX",
             "ingredient" : "PHF-10-10008-4",
             "duration" : 3600,
@@ -66,6 +68,7 @@ Instructions.....
         {
             "status" : "completed",
             "week" : "2016-W11",
+            "country" : "US",
             "dc" : "NJ",
             "ingredient" : "PHF-10-10005-4",
             "duration" : 3600,
@@ -89,6 +92,7 @@ Instructions.....
 {
     "status" : "running",
     "week" : "2016-W10",
+    "country" : "US",
     "dc" : "TX",
     "ingredient" : "PHF-10-10008-4",
     "duration" : 3600,
@@ -109,6 +113,7 @@ Instructions.....
 {
     "status" : "running",
     "week" : "2016-W10",
+    "country" : "US",
     "dc" : "TX",
     "ingredient" : "PHF-10-10008-4",
     "duration" : 3600,
