@@ -38,7 +38,20 @@ func (r *BidRepo) FindByAuction(auctionID uuid.UUID) ([]*bid.Bid, error) {
 
 // FindByUser func
 func (r *BidRepo) FindByUser(userID uuid.UUID) ([]*bid.Bid, error) {
-	return nil, nil
+	var bids []*bid.Bid
+
+	query := `
+        SELECT
+            b.auction_id, b.user_id, b.threshold, b.value
+        FROM
+            bids b
+        WHERE
+            b.user_id = $1
+    `
+
+	err := r.db.Select(&bids, query, userID)
+
+	return bids, err
 }
 
 // FindLowest func
