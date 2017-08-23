@@ -160,15 +160,6 @@ Instructions.....
 } 
 ```
 
-`PUT /auctions/{ID}/bids/{bidID}`
-```json
-{
-    "user_id" : 456,
-    "threshold" : 20,
-    "value" : 230.50
-} 
-```
-
 ### Auction positions
 
 `GET /auctions/{ID}/positions`
