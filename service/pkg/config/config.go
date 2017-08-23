@@ -6,8 +6,8 @@ import (
 
 // Specification for basic configurations
 type Specification struct {
-	Port     int `envconfig:"PORT"`
-	LogLevel int `envconfig:"LOG_LEVEL"`
+	Port     int    `envconfig:"PORT"`
+	LogLevel string `envconfig:"LOG_LEVEL"`
 	Database Database
 }
 

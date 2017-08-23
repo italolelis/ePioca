@@ -2,7 +2,10 @@ package main
 
 import (
 	"os"
+	"time"
 
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	"github.com/italolelis/epioca/service/pkg/config"
 	"github.com/italolelis/epioca/service/pkg/migrations"
 	"github.com/italolelis/epioca/service/pkg/repo"
@@ -32,8 +35,10 @@ func init() {
 	// Can be any io.Writer, see below for File example
 	log.SetOutput(os.Stdout)
 
-	// Only log the warning severity or above.
-	log.SetLevel(log.WarnLevel)
+	level, err := log.ParseLevel(globalConfig.LogLevel)
+	FailOnError(err, "Could not parse the log level")
+
+	log.SetLevel(level)
 
 	log.SetFormatter(&log.JSONFormatter{FieldMap: log.FieldMap{
 		log.FieldKeyTime: "@timestamp",
@@ -55,6 +60,11 @@ func RunServer(cmd *cobra.Command, args []string) {
 
 }
 
+func initRouter() {
+	r := chi.NewRouter()
+	r.Use(middleware.Timeout(60 * time.Second))
+
+}
 func FailOnError(err error, msg string) {
 	if err != nil {
 		log.WithError(err).Panic(msg)
