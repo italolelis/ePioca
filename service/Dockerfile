@@ -1,6 +1,6 @@
 FROM alpine
 
-ADD assets/ca-certificates.crt /etc/ssl/certs/
+ADD build/ca-certificates.crt /etc/ssl/certs/
 ADD dist/epioca-amd64 /
 
 RUN apk add --update curl && \
