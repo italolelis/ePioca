@@ -90,7 +90,6 @@ Instructions.....
 `POST /auctions`
 ```json
 {
-    "status" : "running",
     "week" : "2016-W10",
     "country" : "US",
     "dc" : "TX",
@@ -111,7 +110,6 @@ Instructions.....
 `PUT /auctions/{ID}`
 ```json
 {
-    "status" : "running",
     "week" : "2016-W10",
     "country" : "US",
     "dc" : "TX",
