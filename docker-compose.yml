@@ -16,3 +16,12 @@ services:
             - "8116:8080"
         volumes:
             - ./web:/server/http
+    postgres:
+        image: postgres:9.6
+        ports:
+            - '8117:5432'
+        environment:
+            LC_ALL: C.UTF-8
+            POSTGRES_USER: myuser
+            POSTGRES_PASSWORD: mypass
+            POSTGRES_DB: epioca
