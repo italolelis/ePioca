@@ -1,5 +1,5 @@
-hash: 9aaaab52608c2e1bacc8ad3bd7eebe0da2827d5449a709977bbd501c878dfe43
-updated: 2017-08-23T14:44:29.816392293+02:00
+hash: 7676a0eb4ed764568053c44d1a53c81411b21333ac4d978d734099cd76d339c9
+updated: 2017-08-23T15:57:59.847762119+02:00
 imports:
 - name: github.com/go-chi/chi
   version: ba73ba0623af32e4e5f09880177e73bd78d98852
@@ -24,6 +24,8 @@ imports:
   - database/postgres
   - source
   - source/file
+- name: github.com/pkg/errors
+  version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/satori/go.uuid
   version: 879c5887cd475cd7864858769793b2ceb0d44feb
 - name: github.com/sirupsen/logrus

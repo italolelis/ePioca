@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/containous/traefik/log"
 	"github.com/go-chi/chi"
 	"github.com/italolelis/epioca/service/pkg/domain/auction"
 	uuid "github.com/satori/go.uuid"
+	log "github.com/sirupsen/logrus"
 )
 
 // Auction holds all handlers for an auction

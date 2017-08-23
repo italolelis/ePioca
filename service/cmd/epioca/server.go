@@ -39,7 +39,7 @@ func init() {
 	log.SetOutput(os.Stdout)
 
 	level, err := log.ParseLevel(globalConfig.LogLevel)
-	FailOnError(err, "Could not parse the log level")
+	failOnError(err, "Could not parse the log level")
 
 	log.SetLevel(level)
 
