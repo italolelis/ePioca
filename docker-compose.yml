@@ -1,6 +1,15 @@
 ---
 version: '3'
 services:
+
+    web:
+        build: service/
+        environment: 
+            PORT: 8080
+            LOG_LEVEL: "debug"
+        ports:
+            - "8115:8080"
+
     web:
         build: web/
         ports:
