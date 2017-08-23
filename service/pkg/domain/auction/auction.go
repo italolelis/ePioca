@@ -21,8 +21,8 @@ type Status string
 
 // Repository defines the basic methods for a repository
 type Repository interface {
-	FindAll() ([]*Auction, error)
-	Find(id uuid.UUID) (*Auction, error)
+	Find(status string) ([]*Auction, error)
+	FindByID(id uuid.UUID) (*Auction, error)
 	Add(auction *Auction) error
 	Remove(id uuid.UUID) error
 }

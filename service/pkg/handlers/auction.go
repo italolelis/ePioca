@@ -23,7 +23,9 @@ func NewAuction(repo auction.Repository) *Auction {
 
 // Index handler to list auctions
 func (h *Auction) Index(w http.ResponseWriter, r *http.Request) {
-	auctions, err := h.repo.FindAll()
+	status := r.URL.Query().Get("s")
+
+	auctions, err := h.repo.Find(status)
 	if err != nil {
 		JSON(w, http.StatusInternalServerError, "Failed during searching auctions")
 		return
@@ -41,7 +43,7 @@ func (h *Auction) Show(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	auctions, err := h.repo.Find(id)
+	auctions, err := h.repo.FindByID(id)
 	if err != nil {
 		JSON(w, http.StatusNotFound, "Failed during searching auctions")
 		return
@@ -79,7 +81,7 @@ func (h *Auction) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	auction, err := h.repo.Find(id)
+	auction, err := h.repo.FindByID(id)
 	if err != nil {
 		log.WithError(err).WithField("id", id).Warn("Could not find an auction")
 		JSON(w, http.StatusNotFound, "Could not find an auction")

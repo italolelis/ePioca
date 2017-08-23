@@ -20,19 +20,25 @@ func NewAuction(db *sqlx.DB) auction.Repository {
 	return &auctionRepo{db}
 }
 
-// FindAll returns a slice of all auctions
-func (r *auctionRepo) FindAll() ([]*auction.Auction, error) {
+// Find returns a slice of all auctions
+func (r *auctionRepo) Find(status string) ([]*auction.Auction, error) {
 	var auctions []*auction.Auction
 
-	if err := r.db.Select(&auctions, "SELECT * FROM auctions"); err != nil {
-		return auctions, errors.Wrap(err, "r.db.Select All auctions")
+	if len(status) != 0 {
+		if err := r.db.Select(&auctions, "SELECT * FROM auctions WHERE status = $1", status); err != nil {
+			return auctions, errors.Wrap(err, "r.db.Select All auctions")
+		}
+	} else {
+		if err := r.db.Select(&auctions, "SELECT * FROM auctions"); err != nil {
+			return auctions, errors.Wrap(err, "r.db.Select All auctions")
+		}
 	}
 
 	return auctions, nil
 }
 
-// Find returns one auction by id
-func (r *auctionRepo) Find(id uuid.UUID) (*auction.Auction, error) {
+// FindByID returns one auction by id
+func (r *auctionRepo) FindByID(id uuid.UUID) (*auction.Auction, error) {
 	var auction auction.Auction
 
 	if err := r.db.Get(&auction, "SELECT * FROM auctions WHERE id = $1", id); err != nil {
