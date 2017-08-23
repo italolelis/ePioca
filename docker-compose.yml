@@ -4,7 +4,7 @@ services:
 
     service:
         build: service/
-        environment: 
+        environment:
             PORT: 8080
             LOG_LEVEL: "debug"
             DATABASE_DSN: "postgres://epioca:epioca@postgres/epioca?sslmode=disable"
@@ -14,6 +14,8 @@ services:
         volumes:
             - ./service:/go/src/github.com/italolelis/epioca/service
         command: "CompileDaemon -build='go install ./cmd/epioca' -command=epioca"
+        depends_on:
+            - postgres
 
     web:
         build: web/
@@ -21,6 +23,7 @@ services:
             - "8116:8080"
         volumes:
             - ./web:/server/http
+
     postgres:
         image: postgres:9.6
         ports:

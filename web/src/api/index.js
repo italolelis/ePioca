@@ -28,6 +28,24 @@ if (getAccessToken()) {
     setAccessToken(getAccessToken())
 }
 
+export const setUserRole = (rolesArray) => {
+    if (rolesArray.indexOf('ROLE_SUPER_ADMIN') === -1) {
+        return localStorage.setItem('user_role', 'supplier')
+    }
+
+    return localStorage.setItem('user_role', 'buyer')
+}
+
+export const getUserRole = () => localStorage.getItem('user_role')
+
+if (getAccessToken()) {
+    setAccessToken(getAccessToken())
+}
+
+if (getUserRole() === 'buyer') {
+    setUserRole([ 'ROLE_SUPER_ADMIN' ])
+}
+
 // Add an interceptor to deal with forbidden requests
 client.interceptors.response.use(response => response, error => {
     if (error.response) {

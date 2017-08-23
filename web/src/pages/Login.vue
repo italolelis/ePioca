@@ -6,16 +6,14 @@
 
         <form class="form-horizontal"  @submit.prevent="attemptLogin({ username, password })">
             <div class="row">
-                <div class="col-md-3"></div>
-                <div class="col-md-6">
-                    <h2>Epioca Login</h2>
+                <div class="col-md-6 mx-auto">
+                    <h2>ePioca Login</h2>
                     <hr>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-md-3"></div>
-                <div class="col-md-6">
+                <div class="col-md-6 mx-auto">
                     <div class="alert alert-danger" v-if="showLoginError">
                         Invalid username or password
                     </div>
@@ -23,8 +21,7 @@
             </div>
 
             <div class="row">
-                <div class="col-md-3"></div>
-                <div class="col-md-6">
+                <div class="col-md-6 mx-auto">
                     <div class="form-group has-danger">
                         <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                             <div class="input-group-addon"><i class="fa fa-at"></i></div>
@@ -58,7 +55,7 @@
 
 <script>
 import { login } from '@/api/auth'
-import { setAccessToken } from '@/api'
+import { setAccessToken, setUserRole } from '@/api'
 
 export default {
     data() {
@@ -76,6 +73,7 @@ export default {
             login(username, password)
                 .then(({ data }) => {
                     setAccessToken(data.access_token)
+                    setUserRole(data.user_data.metadata.roles)
                     this.$router.push(redirectTo)
                 })
                 .catch(() => this.showLoginError = true)

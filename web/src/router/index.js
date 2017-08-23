@@ -1,9 +1,13 @@
 import Vue from 'vue'
+import Router from 'vue-router'
+
 import authMiddleware from '@/middleware/authMiddleware'
-import Router from 'vue-router';
-import Hello from '@/pages/Hello';
-import Login from '@/pages/Login';
-import Auction from '@/pages/auction'
+import roleMiddleware from '@/middleware/roleMiddleware'
+
+import Login from '@/pages/Login'
+import Dashboard from '@/pages/Dashboard'
+import CreateAuction from '@/pages/CreateAuction'
+import ViewAuction from '@/pages/CreateAuction'
 
 Vue.use(Router);
 
@@ -12,9 +16,9 @@ const router = new Router({
     routes: [
         {
             path: '/',
-            name: 'Hello',
+            name: 'Dashboard',
             meta: { requiresAuth: true },
-            component: Hello
+            component: Dashboard
         },
         {
             path: '/login',
@@ -22,14 +26,21 @@ const router = new Router({
             component: Login
         },
         {
-            path: '/auction',
-            name: 'Auction',
-            component: Auction,
-            meta: { requiresAuth: true }
+            path: '/auctions/create',
+            name: 'Create Auction',
+            component: CreateAuction,
+            meta: { requiresAuth: true, buyerOnly: true }
+        },
+        {
+            path: '/auctions/:id',
+            name: 'View Auction',
+            component: ViewAuction,
+            meta: { requiresAuth: true, supplierOnly: true }
         }
     ]
 });
 
 router.beforeEach(authMiddleware);
+router.beforeEach(roleMiddleware);
 
 export default router
