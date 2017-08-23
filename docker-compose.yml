@@ -1,0 +1,9 @@
+---
+version: '3'
+services:
+    web:
+        build: web/
+        ports:
+            - "8116:8080"
+        volumes:
+            - ./web:/server/http
