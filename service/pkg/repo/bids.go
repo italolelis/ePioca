@@ -3,6 +3,7 @@ package repo
 import (
 	"github.com/italolelis/epioca/service/pkg/domain/bid"
 	"github.com/jmoiron/sqlx"
+	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -56,7 +57,26 @@ func (r *BidRepo) FindByUser(userID uuid.UUID) ([]*bid.Bid, error) {
 
 // FindLowest func
 func (r *BidRepo) FindLowest(auctionID uuid.UUID) (*bid.Bid, error) {
-	return nil, nil
+	var bid bid.Bid
+
+	query := `
+		SELECT 
+			b.* 
+		FROM bids b
+		WHERE 
+			b.auction_id = $1
+		ORDER BY 
+			b.value ASC
+		LIMIT 1
+    `
+
+	err := r.db.Get(&bid, query, auctionID)
+
+	if err != nil {
+		return &bid, errors.Wrap(err, "Get lowest auction bid")
+	}
+
+	return &bid, nil
 }
 
 // Add func
