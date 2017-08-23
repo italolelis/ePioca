@@ -6,7 +6,7 @@ WARN_COLOR=\033[33;01m
 # The import path is the unique absolute name of your repository.
 # All subpackages should always be imported as relative to it.
 # If you change this, run `make clean`.
-IMPORT_PATH := github.com/italolelis/epioca
+IMPORT_PATH := github.com/italolelis/epioca/service
 PKG_SRC := $(IMPORT_PATH)/cmd/epioca
 
 # Space separated patterns of packages to skip in list, test, format.
