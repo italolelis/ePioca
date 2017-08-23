@@ -21,7 +21,7 @@ CREATE TABLE "public"."bids" (
     "auction_id" UUID,
     "user_id" UUID NOT NULL,
     "threshold" integer NOT NULL,
-    "bid" float8 NOT NULL,
+    "value" float8 NOT NULL,
     PRIMARY KEY ("id"),
     CONSTRAINT "fk_auctions" FOREIGN KEY ("auction_id") REFERENCES "public"."auctions"("id") ON DELETE CASCADE
 );
