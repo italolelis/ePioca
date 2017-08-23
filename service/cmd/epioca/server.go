@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"net/http"
 	"os"
 	"time"
 
@@ -58,13 +60,21 @@ func RunServer(cmd *cobra.Command, args []string) {
 	err, _ = migrationService.Up()
 	FailOnError(err, "Could not run migrations")
 
+	r := initRouter()
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", globalConfig.Port), r))
 }
 
-func initRouter() {
+func initRouter() chi.Router {
 	r := chi.NewRouter()
 	r.Use(middleware.Timeout(60 * time.Second))
 
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Welcome to ePioca!!"))
+	})
+
+	return r
 }
+
 func FailOnError(err error, msg string) {
 	if err != nil {
 		log.WithError(err).Panic(msg)
