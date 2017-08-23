@@ -1,6 +1,8 @@
 package repo
 
 import (
+	"database/sql"
+
 	"github.com/italolelis/epioca/service/pkg/domain/auction"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
@@ -22,10 +24,10 @@ func NewAuction(db *sqlx.DB) auction.Repository {
 
 // Find returns a slice of all auctions
 func (r *auctionRepo) Find(status string) ([]*auction.Auction, error) {
-	var auctions []*auction.Auction
+	auctions := make([]*auction.Auction, 0)
 
 	if len(status) != 0 {
-		if err := r.db.Select(&auctions, "SELECT * FROM auctions WHERE status = $1", status); err != nil {
+		if err := r.db.Select(&auctions, "SELECT * FROM auctions WHERE status = $1", status); err != nil && err != sql.ErrNoRows {
 			return auctions, errors.Wrap(err, "r.db.Select All auctions")
 		}
 	} else {
