@@ -1,8 +1,7 @@
 package repo
 
 import (
-	"ePioca/service/pkg/domain/bid"
-
+	"github.com/italolelis/epioca/service/pkg/domain/bid"
 	"github.com/jmoiron/sqlx"
 	uuid "github.com/satori/go.uuid"
 )
