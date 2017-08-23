@@ -1,6 +1,6 @@
-CREATE TYPE auction_status AS ENUM ('running', 'scheduled', 'completed');
+CREATE TYPE public.auction_status AS ENUM ('running', 'scheduled', 'completed');
 
-CREATE TABLE "public"."auctions" (
+CREATE TABLE public.auctions (
     "id" UUID,
     "status" auction_status NOT NULL,
     "week" text NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE "public"."auctions" (
     PRIMARY KEY ("id")
 );
 
-CREATE TABLE "public"."bids" (
+CREATE TABLE public.bids (
     "id" UUID,
     "auction_id" UUID,
     "user_id" UUID NOT NULL,
