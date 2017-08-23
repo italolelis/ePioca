@@ -21,6 +21,9 @@ deps:
 	@go get -u github.com/Masterminds/glide
 	@go get -u github.com/golang/lint/golint
 	@glide install
+	
+	@echo "$(OK_COLOR)==> Installing CompileDaemon$(NO_COLOR)"
+	@go get github.com/githubnemo/CompileDaemon
 
 build:
 	@echo "$(OK_COLOR)==> Building... $(NO_COLOR)"
