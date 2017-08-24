@@ -1,14 +1,16 @@
 <template>
-    <ul>
-        <li v-for="auction in auctions">
-            <auction-list-item
-                :ingredient="auction.ingredient"
-                :qty="auction.qty"
-                :type="filter"
-            >
-            </auction-list-item>
-        </li>
-    </ul>
+    <b-list-group>
+        <auction-list-item
+            v-for="auction in auctions"
+            :key="auction.id"
+            :id="auction.id"
+            :ingredient="auction.ingredient"
+            :qty="auction.qty"
+            :startTime="auction.start_date"
+            :duration="auction.duration"
+            :type="filter"
+            ></auction-list-item>
+    </b-list-group>
 </template>
 
 <script>
