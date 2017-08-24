@@ -51,6 +51,8 @@ func init() {
 }
 
 func RunServer(cmd *cobra.Command, args []string) {
+	log.WithField("port", globalConfig.Port).Info("Starting application")
+
 	log.WithField("dsn", globalConfig.Database.DSN).Info("Trying to connect to DB")
 	db, err := sqlx.Connect("postgres", globalConfig.Database.DSN)
 	failOnError(err, "Failed to connect to DB")
@@ -64,6 +66,8 @@ func RunServer(cmd *cobra.Command, args []string) {
 
 	r := initRouter()
 	initAuctionRoutes(r, db)
+
+	log.WithField("port", globalConfig.Port).Info("Application started")
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", globalConfig.Port), r))
 }
@@ -85,7 +89,7 @@ func initRouter() chi.Router {
 
 	r.Use(cors.Handler)
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Welcome to ePioca!!"))
+		w.Write([]byte(fmt.Sprintf("Welcome to ePioca v%s!!", version)))
 	})
 
 	return r

@@ -1,15 +1,11 @@
-CREATE TYPE public.auction_status AS ENUM ('running', 'scheduled', 'completed');
-
 CREATE TABLE public.auctions (
     "id" UUID,
-    "status" auction_status NOT NULL,
     "week" text NOT NULL,
     "country" varchar(2) NOT NULL,
     "dc" varchar(2) NOT NULL,
     "ingredient" text NOT NULL,
     "duration" integer,
     "start_date" TIMESTAMP NOT NULL DEFAULT 'now()',
-    "end_date" TIMESTAMP NOT NULL DEFAULT 'now()',
     "qty" float8 NOT NULL,
     "threshold" integer[],
     "max_price" float8 DEFAULT '0',

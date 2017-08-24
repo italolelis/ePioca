@@ -30,7 +30,6 @@ Instructions.....
             "ingredient" : "PHF-10-10008-4",
             "duration" : 3600,
             "start_date" : "2017-08-23 10:00:00",
-            "end_date" : "2017-08-25 10:00:00",
             "qty" : 2456.50,
             "thresholds" : [
                 30,
@@ -55,8 +54,7 @@ Instructions.....
             "dc" : "TX",
             "ingredient" : "PHF-10-10008-4",
             "duration" : 3600,
-            "start_date" : "2017-08-23 10:00:00",
-            "end_date" : "2017-08-25 10:00:00",
+            "start_date" : "2017-08-23T10:00:00Z",
             "qty" : 2456.50,
             "thresholds" : [
                 30,
@@ -72,8 +70,7 @@ Instructions.....
             "dc" : "NJ",
             "ingredient" : "PHF-10-10005-4",
             "duration" : 3600,
-            "start_date" : "2017-08-23 10:00:00",
-            "end_date" : "2017-08-25 10:00:00",
+            "start_date" : "2017-08-23T10:00:00Z",
             "qty" : 2456.50,
             "thresholds" : [
                 30,
@@ -95,8 +92,7 @@ Instructions.....
     "dc" : "TX",
     "ingredient" : "PHF-10-10008-4",
     "duration" : 3600,
-    "start_date" : "2017-08-23 10:00:00",
-    "end_date" : "2017-08-25 10:00:00",
+    "start_date" : "2017-08-23T10:00:00Z",
     "qty" : 2456.50,
     "thresholds" : [
         30,
@@ -115,8 +111,7 @@ Instructions.....
     "dc" : "TX",
     "ingredient" : "PHF-10-10008-4",
     "duration" : 3600,
-    "start_date" : "2017-08-23 10:00:00",
-    "end_date" : "2017-08-25 10:00:00",
+    "start_date" : "2017-08-23T10:00:00Z",
     "qty" : 2456.50,
     "thresholds" : [
         40,
