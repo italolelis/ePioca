@@ -68,9 +68,9 @@ func (r *auctionRepo) FindByID(id uuid.UUID) (*auction.Auction, error) {
 // Add upserts auction into storage
 func (r *auctionRepo) Add(auction *auction.Auction) error {
 	if _, err := r.db.NamedExec(`INSERT INTO auctions 
-	VALUES (:id, :week, :country, :dc, :ingredient, :duration, :start_date, :qty, :threshold, :max_price, :price_increment)
+	VALUES (:id, :week, :country, :dc, :ingredient.sku, :ingredient.name, :duration, :start_date, :qty, :threshold, :max_price, :price_increment)
 			ON CONFLICT (id) DO
-			UPDATE SET  (week, country, dc, ingredient, duration, start_date, qty, threshold, max_price, price_increment) =  (:week, :country, :dc, :ingredient, :duration, :start_date, :qty, :threshold, :max_price, :price_increment)
+			UPDATE SET  (week, country, dc, "ingredient.sku", "ingredient.name", duration, start_date, qty, threshold, max_price, price_increment) =  (:week, :country, :dc, :ingredient.sku, :ingredient.name, :duration, :start_date, :qty, :threshold, :max_price, :price_increment)
 	`,
 		auction); err != nil {
 		return errors.Wrap(err, "Insert one auction")

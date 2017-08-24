@@ -15,11 +15,16 @@ type Repository interface {
 	Add(bid *Bid) error
 }
 
+type User struct {
+	ID   uuid.UUID `json:"id" db:"id"`
+	Name string    `json:"name" db:"name"`
+}
+
 // Bid represents a supplier bid to an auction
 type Bid struct {
 	ID        uuid.UUID `json:"id" db:"id"`
 	AuctionID uuid.UUID `json:"-" db:"auction_id"`
-	UserID    uuid.UUID `json:"user_id" db:"user_id"`
+	User      *User     `json:"user" db:"user"`
 	Threshold int       `json:"threshold" db:"threshold"`
 	Value     float32   `json:"value" db:"value"`
 	Created   time.Time `json:"created" db:"created"`

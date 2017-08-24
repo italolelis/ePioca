@@ -3,19 +3,22 @@ CREATE TABLE public.auctions (
     "week" text NOT NULL,
     "country" varchar(2) NOT NULL,
     "dc" varchar(2) NOT NULL,
-    "ingredient" text NOT NULL,
+    "ingredient.sku" text NOT NULL,
+    "ingredient.name" text NOT NULL,
     "duration" integer,
     "start_date" TIMESTAMP NOT NULL DEFAULT 'now()',
     "qty" float8 NOT NULL,
     "threshold" integer[],
     "max_price" float8 DEFAULT '0',
+    "price_increment" float8 DEFAULT '0',
     PRIMARY KEY ("id")
 );
 
 CREATE TABLE public.bids (
     "id" UUID,
     "auction_id" UUID,
-    "user_id" UUID NOT NULL,
+    "user.id" UUID NOT NULL,
+    "user.name" text NOT NULL,
     "threshold" integer NOT NULL,
     "value" float8 NOT NULL,
     "created" TIMESTAMP NOT NULL DEFAULT 'now()',
