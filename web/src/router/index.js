@@ -7,8 +7,8 @@ import roleMiddleware from '@/middleware/roleMiddleware'
 import Login from '@/pages/Login'
 import Dashboard from '@/pages/Dashboard'
 import CreateAuction from '@/pages/CreateAuction'
-import ViewAuction from '@/pages/CreateAuction'
 import NotFound from '@/pages/NotFound'
+import ViewAuction from '@/pages/ViewAuction'
 
 Vue.use(Router);
 
