@@ -5,5 +5,9 @@ export default {
     },
     gateway: {
         uri: 'https://gw-staging.hellofresh.com'
+    },
+
+    service: {
+        uri: 'http://localhost:8115'
     }
 }

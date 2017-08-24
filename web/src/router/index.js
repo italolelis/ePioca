@@ -7,6 +7,8 @@ import roleMiddleware from '@/middleware/roleMiddleware'
 import Login from '@/pages/Login'
 import Dashboard from '@/pages/Dashboard'
 import CreateAuction from '@/pages/CreateAuction'
+import ViewAuction from '@/pages/CreateAuction'
+import NotFound from '@/pages/NotFound'
 import ViewAuction from '@/pages/ViewAuction'
 
 Vue.use(Router);
@@ -35,7 +37,13 @@ const router = new Router({
             path: '/auctions/:id',
             name: 'View Auction',
             component: ViewAuction,
-            meta: { requiresAuth: true}
+            meta: { requiresAuth: true, supplierOnly: true }
+        },
+        // 404 catch all route
+        {
+            path: '*',
+            name: '404',
+            component: NotFound
         }
     ]
 });

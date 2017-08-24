@@ -39,7 +39,6 @@ type Auction struct {
 	Ingredient string        `json:"ingredient" db:"ingredient"`
 	Duration   time.Duration `json:"duration" db:"duration"`
 	StartDate  time.Time     `json:"start_date" db:"start_date"`
-	EndDate    time.Time     `json:"end_date" db:"end_date"`
 	Qty        float32       `json:"qty" db:"qty"`
 	Threshold  pq.Int64Array `json:"threshold" db:"threshold"`
 	MaxPrice   float32       `json:"max_price" db:"max_price"`
