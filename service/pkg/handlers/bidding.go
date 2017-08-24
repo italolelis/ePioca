@@ -101,6 +101,11 @@ func (h *Bidding) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if auction.MaxPrice < bid.Value {
+		JSON(w, http.StatusInternalServerError, "Your bid value cannot be higher than maximum value defined per auction")
+		return
+	}
+
 	if err := h.repo.Add(bid); err != nil {
 		log.WithError(err).Error("Failed to create a bid")
 		JSON(w, http.StatusInternalServerError, "Failed to create a bid")
