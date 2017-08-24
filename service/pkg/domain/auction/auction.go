@@ -31,16 +31,17 @@ type Repository interface {
 
 // Auction represents an auction
 type Auction struct {
-	ID         uuid.UUID     `json:"id" db:"id"`
-	Week       string        `json:"week" db:"week"`
-	Country    string        `json:"country" db:"country"`
-	DC         string        `json:"dc" db:"dc"`
-	Ingredient string        `json:"ingredient" db:"ingredient"`
-	Duration   time.Duration `json:"duration" db:"duration"`
-	StartDate  time.Time     `json:"start_date" db:"start_date"`
-	Qty        float32       `json:"qty" db:"qty"`
-	Threshold  pq.Int64Array `json:"threshold" db:"threshold"`
-	MaxPrice   float32       `json:"max_price" db:"max_price"`
+	ID             uuid.UUID     `json:"id" db:"id"`
+	Week           string        `json:"week" db:"week"`
+	Country        string        `json:"country" db:"country"`
+	DC             string        `json:"dc" db:"dc"`
+	Ingredient     string        `json:"ingredient" db:"ingredient"`
+	Duration       time.Duration `json:"duration" db:"duration"`
+	StartDate      time.Time     `json:"start_date" db:"start_date"`
+	Qty            float32       `json:"qty" db:"qty"`
+	Threshold      pq.Int64Array `json:"threshold" db:"threshold"`
+	MaxPrice       float32       `json:"max_price" db:"max_price"`
+	PriceIncrement float32       `json:"price_increment" db:"price_increment"`
 }
 
 // NewAuction creates a new instance of auction
