@@ -1,7 +1,7 @@
 <template>
     <div class="item-description">
-        <span v-if="type == 'running'">{{ ingredient }}</span>
-        <span v-if="type == 'running'">{{ qty }}</span>
+        <span>{{ ingredient }}</span>
+        <span>{{ qty }}</span>
         <span v-if="type == 'running'">01:12</span>
     </div>
 </template>
