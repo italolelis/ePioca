@@ -16,8 +16,10 @@ const (
 	Completed string = "completed"
 )
 
-//Status represents the auction status
-type Status string
+// IsValidStatus checks if the status is a valid one
+func IsValidStatus(s string) bool {
+	return s == Running || s == Scheduled || s == Completed
+}
 
 // Repository defines the basic methods for a repository
 type Repository interface {

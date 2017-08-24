@@ -9,6 +9,11 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+var (
+	//ErrInvalidStatusProvided is used when an invalid status is provided
+	ErrInvalidStatusProvided = errors.New("you need to provide a valid status (running, scheduled or completed)")
+)
+
 const (
 	auctionTableName = "auctions"
 )
@@ -17,7 +22,7 @@ type auctionRepo struct {
 	db *sqlx.DB
 }
 
-// NewSemaphore returns a implementation of Auction repository
+// NewAuction returns a implementation of Auction repository
 func NewAuction(db *sqlx.DB) auction.Repository {
 	return &auctionRepo{db}
 }
@@ -27,6 +32,10 @@ func (r *auctionRepo) Find(status string) ([]*auction.Auction, error) {
 	auctions := make([]*auction.Auction, 0)
 
 	if len(status) != 0 {
+		if !auction.IsValidStatus(status) {
+			return nil, ErrInvalidStatusProvided
+		}
+
 		if err := r.db.Select(&auctions, "SELECT * FROM auctions WHERE status = $1", status); err != nil && err != sql.ErrNoRows {
 			return auctions, errors.Wrap(err, "r.db.Select All auctions")
 		}

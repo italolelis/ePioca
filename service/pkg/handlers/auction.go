@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/italolelis/epioca/service/pkg/domain/auction"
+	"github.com/italolelis/epioca/service/pkg/repo"
 	uuid "github.com/satori/go.uuid"
 	log "github.com/sirupsen/logrus"
 )
@@ -26,6 +27,11 @@ func (h *Auction) Index(w http.ResponseWriter, r *http.Request) {
 	status := r.URL.Query().Get("s")
 
 	auctions, err := h.repo.Find(status)
+	if err == repo.ErrInvalidStatusProvided {
+		JSON(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
 	if err != nil {
 		JSON(w, http.StatusInternalServerError, "Failed during searching auctions")
 		return
