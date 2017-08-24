@@ -75,7 +75,6 @@ func (h *Auction) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	act.Status = auction.Running
 	if err := h.repo.Add(act); err != nil {
 		log.WithError(err).Error("Failed to create an auction")
 		JSON(w, http.StatusInternalServerError, "Failed to create an auction")

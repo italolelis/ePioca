@@ -1,6 +1,8 @@
 package auction
 
 import (
+	"sort"
+
 	"github.com/italolelis/epioca/service/pkg/domain/bid"
 	"github.com/pkg/errors"
 )
@@ -10,34 +12,45 @@ var (
 	ErrInvalidPercentage = errors.New("invalid percentage given")
 )
 
-func findWinningBid(bids []*bid.Bid, totalPercentage int) ([]*bid.Bid, error) {
-	thresholds := make(map[int]float32)
+func FindWinningBids(bids bid.Bids, totalPercentage int) ([]*bid.Bid, error) {
+	var divisible int
+
+	thresholds := make(map[int]int)
 	for _, b := range bids {
 		minValue, ok := thresholds[b.Threshold]
 		if !ok {
-			thresholds[b.Threshold] = b.Value
+			thresholds[b.Threshold] = int(b.Value)
 			continue
 		}
 
-		if b.Value < minValue {
-			thresholds[b.Threshold] = b.Value
+		if int(b.Value) < minValue {
+			thresholds[b.Threshold] = int(b.Value)
 		}
 	}
 
-	var total int
-	for t := range thresholds {
-		total += t
-	}
-
-	if total != totalPercentage {
-		return nil, ErrInvalidPercentage
+	if len(thresholds) == 1 {
+		var t int
+		for k := range thresholds {
+			t = k
+		}
+		divisible = totalPercentage / t
 	}
 
 	var winners []*bid.Bid
-	for t, v := range thresholds {
-		for _, b := range bids {
-			if b.Threshold == t && b.Value == v {
-				winners = append(winners, b)
+	if divisible != 0 {
+		sort.Sort(bids)
+		for i, b := range bids {
+			if i >= divisible {
+				break
+			}
+			winners = append(winners, b)
+		}
+	} else {
+		for t, v := range thresholds {
+			for _, b := range bids {
+				if b.Threshold == t && int(b.Value) == v {
+					winners = append(winners, b)
+				}
 			}
 		}
 	}

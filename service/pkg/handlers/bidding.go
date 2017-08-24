@@ -115,3 +115,27 @@ func (h *Bidding) Create(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Location", fmt.Sprintf("/auctions/%s/bids", auctionID))
 	w.WriteHeader(http.StatusCreated)
 }
+
+// ShowByAuction handler to list biddings for an auction
+func (h *Bidding) Winners(w http.ResponseWriter, r *http.Request) {
+	id, err := uuid.FromString(chi.URLParam(r, "auctionId"))
+	if err != nil {
+		log.WithError(err).Warn("Failed to parse the UUID")
+		JSON(w, http.StatusBadRequest, "The provided auction ID is invalid")
+		return
+	}
+
+	bids, err := h.repo.FindByAuction(id)
+	if err != nil {
+		JSON(w, http.StatusInternalServerError, "Failed during searching latest bids")
+		return
+	}
+
+	winningBids, err := auction.FindWinningBids(bids, 100)
+	if err != nil {
+		JSON(w, http.StatusInternalServerError, "Failed to get the winning bids")
+		return
+	}
+
+	JSON(w, http.StatusOK, winningBids)
+}

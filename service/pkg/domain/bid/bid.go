@@ -29,3 +29,17 @@ type Bid struct {
 func NewBid(id uuid.UUID) *Bid {
 	return &Bid{ID: id}
 }
+
+type Bids []*Bid
+
+func (slice Bids) Len() int {
+	return len(slice)
+}
+
+func (slice Bids) Less(i, j int) bool {
+	return slice[i].Value < slice[j].Value
+}
+
+func (slice Bids) Swap(i, j int) {
+	slice[i], slice[j] = slice[j], slice[i]
+}

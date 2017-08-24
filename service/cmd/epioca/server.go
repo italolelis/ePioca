@@ -106,12 +106,11 @@ func initAuctionRoutes(r chi.Router, db *sqlx.DB) {
 		r.Put("/{id}", handler.Update)
 		r.Delete("/{id}", handler.Remove)
 
-		r.Get("/winners", handler.Index)
-
 		r.Route("/{auctionId}/bids", func(r chi.Router) {
 			r.Get("/", bidHandler.ShowByAuction)
 			r.Get("/lowest", bidHandler.ShowByLowest)
 			r.Post("/", bidHandler.Create)
+			r.Get("/winners", bidHandler.Winners)
 		})
 	})
 }

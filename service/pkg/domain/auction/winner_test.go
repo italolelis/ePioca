@@ -77,7 +77,7 @@ func TestWinningBid(t *testing.T) {
 		},
 	}
 
-	winners, err := findWinningBid(bids, 100)
+	winners, err := FindWinningBids(bids, 100)
 	require.NoError(t, err)
 	assert.Len(t, winners, 2)
 }
@@ -109,7 +109,7 @@ func TestWinningBid2(t *testing.T) {
 		},
 	}
 
-	winners, err := findWinningBid(bids, 100)
+	winners, err := FindWinningBids(bids, 100)
 	require.NoError(t, err)
 	assert.Len(t, winners, 2)
 }
@@ -133,7 +133,7 @@ func TestWinningBidEvenThreshold(t *testing.T) {
 		},
 		&bid.Bid{
 			Threshold: 50,
-			Value:     60,
+			Value:     61,
 			UserID:    supplierC,
 		},
 		&bid.Bid{
@@ -143,7 +143,39 @@ func TestWinningBidEvenThreshold(t *testing.T) {
 		},
 	}
 
-	winners, err := findWinningBid(bids, 100)
+	winners, err := FindWinningBids(bids, 100)
 	require.NoError(t, err)
-	assert.Len(t, winners, 1)
+	assert.Len(t, winners, 2)
+}
+
+func TestWinningBid4(t *testing.T) {
+	supplierA := uuid.NewV4()
+	supplierB := uuid.NewV4()
+
+	bids := []*bid.Bid{
+		&bid.Bid{
+			Threshold: 25,
+			Value:     60,
+			UserID:    supplierA,
+		},
+		&bid.Bid{
+			Threshold: 25,
+			Value:     61,
+			UserID:    supplierB,
+		},
+		&bid.Bid{
+			Threshold: 25,
+			Value:     62,
+			UserID:    supplierA,
+		},
+		&bid.Bid{
+			Threshold: 25,
+			Value:     63,
+			UserID:    supplierA,
+		},
+	}
+
+	winners, err := FindWinningBids(bids, 100)
+	require.NoError(t, err)
+	assert.Len(t, winners, 4)
 }
