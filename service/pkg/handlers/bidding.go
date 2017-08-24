@@ -85,8 +85,8 @@ func (h *Bidding) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if auction.IsCompleted() {
-		JSON(w, http.StatusBadRequest, "You cannot bid for already completed auction")
+	if auction.IsCompleted() || auction.IsScheduled() {
+		JSON(w, http.StatusBadRequest, "You cannot bid for already completed or scheduled auction")
 		return
 	}
 
