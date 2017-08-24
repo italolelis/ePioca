@@ -7,7 +7,7 @@ const headers = {
 }
 
 const client = axios.create({
-    baseURL: config.gateway.uri,
+    baseURL: config.service.uri,
     headers,
 })
 
