@@ -121,8 +121,3 @@ func (r *BidRepo) Add(bid *bid.Bid) error {
 
 	return nil
 }
-
-// Remove func
-func (r *BidRepo) Remove(id uuid.UUID) error {
-	return nil
-}

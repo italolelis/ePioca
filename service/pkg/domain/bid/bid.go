@@ -13,7 +13,6 @@ type Repository interface {
 	FindLowest(auctionID uuid.UUID) (*Bid, error)
 	FindLatestByAuctionUser(auctionID uuid.UUID, userID uuid.UUID) (*Bid, error)
 	Add(bid *Bid) error
-	Remove(id uuid.UUID) error
 }
 
 // Bid represents a supplier bid to an auction
