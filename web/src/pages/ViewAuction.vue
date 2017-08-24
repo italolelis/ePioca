@@ -47,9 +47,9 @@
             },
 
             getBidsSorted(response) {
-                return response.data.map( (object) => {
-                    return object.value;
-                }).sort(this.sortBids).slice(0, 3);
+                return response.data.map( (object) => { return object.value; })
+                                    .sort(this.sortBids)
+                                    .slice(0, 3);
             },
 
             getAuction(id) {
