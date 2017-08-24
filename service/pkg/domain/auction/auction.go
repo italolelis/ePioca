@@ -58,3 +58,13 @@ func (a *Auction) IsScheduled() bool {
 func (a *Auction) IsCompleted() bool {
 	return a.Status == Completed
 }
+
+// IsThresholdValid verifies if the sum of all thresholds will be 100 percent
+func (a *Auction) IsThresholdValid() bool {
+	var total int64
+	for _, t := range a.Threshold {
+		total += t
+	}
+
+	return total == 100
+}

@@ -67,10 +67,16 @@ func (h *Auction) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !act.IsThresholdValid() {
+		log.Error("The sum of all thresholds should be 100%")
+		JSON(w, http.StatusBadRequest, "The sum of all thresholds should be 100%")
+		return
+	}
+
 	act.Status = auction.Running
 	if err := h.repo.Add(act); err != nil {
 		log.WithError(err).Error("Failed to create an auction")
-		JSON(w, http.StatusInternalServerError, "FFailed to create an auction")
+		JSON(w, http.StatusInternalServerError, "Failed to create an auction")
 		return
 	}
 
