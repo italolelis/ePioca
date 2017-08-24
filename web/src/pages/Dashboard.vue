@@ -3,11 +3,15 @@
         <div class ="row">
             <div v-for="type in types" class="col-md-4">
                 <div class="item">
-                    <div><img :src="type.image"></div>
+                    <div>
+                        <img :src="type.image">
+                    </div>
                     <div class="item-description">
                         <auction-list v-bind:filter="type.filter"></auction-list>
                     </div>
-                    <span class="item-name">{{ type.filter }}</span>
+                    <span class="item-name">
+                        {{ type.filter }}
+                    </span>
                 </div>
             </div>
         </div>
@@ -34,7 +38,7 @@
                         'image': 'https://cdn4.iconfinder.com/data/icons/ios7-line/512/Timetable.png'
                     },
                     {
-                        'filter' : 'complete',
+                        'filter' : 'completed',
                         'image': 'https://cdn0.iconfinder.com/data/icons/flat-security-icons/512/tick.png'
                     }
                 ]
