@@ -42,7 +42,7 @@ export default {
     computed: {
         timeRemaining() {
             const now = moment()
-            const end = moment(this.startTime).add(this.duration)
+            const end = moment(this.startTime).add(this.duration, 's')
 
             return moment.duration(now.diff(end)).humanize()
         }

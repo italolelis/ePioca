@@ -1,5 +1,9 @@
 <template>
     <section>
+
+        <div class="row" v-if="userRole === 'buyer'">
+        </div>
+
         <div class="row">
             <div class="col-md-4" v-for="type in types">
                 <p class="text-center">
@@ -16,6 +20,7 @@
 
 <script>
     import AuctionList from '@/components/AuctionList'
+    import { getUserRole } from '@/api'
 
     export default {
         components: {
@@ -27,6 +32,12 @@
                 if (!value) return ''
                 value = value.toString()
                 return value.charAt(0).toUpperCase() + value.slice(1)
+            }
+        },
+
+        computed: {
+            userRole() {
+                return getUserRole()
             }
         },
 
