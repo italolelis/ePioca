@@ -1,64 +1,102 @@
 <template>
-    <div>
-        Create auction
+    <div class="container">
+        <!-- TODO: Refactor these into alerts component -->
+        <div class="row">
+            <div class="col">
+                <b-alert variant="danger"
+                    dismissible
+                    :show="alert.error.show"
+                    @dismissed="alert.error.show=false">
+                    {{ alert.error.message }}
+                </b-alert>
+            </div>
+        </div>
 
-        <form @submit.prevent="saveAuction">
+        <b-form @submit.prevent="saveAuction">
 
-            <div class="form-row">
+            <b-form-row>
                 <div class="col">
-                    <label>Week</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" v-model="week">
-                        <span class="input-group-btn">
-                            <button class="btn btn-secondary" type="button" @click="fetchIngredients">Go</button>
-                        </span>
-                    </div>
+                    <b-form-group label="Week">
+                        <b-form-input
+                            type="text"
+                            v-model="form.week"
+                            @change="fetchIngredients"
+                            :state="weekState"
+                            required></b-form-input>
+                    </b-form-group>
                 </div>
 
                 <div class="col">
-                    <label>Ingredient</label>
-                    <select v-model="selectedIngredient">
-                        <option
-                            v-for="ingredient in ingredients"
-                            :value="ingredient.productSku">
-                            {{ ingredient.productName }}
-                        </option>
-                    </select>
+                    <b-form-group label="Ingredient">
+                        <b-form-select
+                            v-model="form.ingredient"
+                            :options="ingredients"
+                            value-field="productSku"
+                            text-field="productName"
+                            required>
+                        </b-form-select>
+                    </b-form-group>
                 </div>
-            </div>
+            </b-form-row>
 
-            <div class="form-group">
-                <label>Start Date</label>
-                <input type="datetime" v-model="startDate">
-            </div>
+            <b-form-row>
 
-            <div class="form-group">
-                <label>End Date</label>
-                <input type="datetime" v-model="endDate">
-            </div>
+                <div class="col">
+                    <b-form-group label="Start Date">
+                        <flat-pickr
+                            v-model="form.startDate"
+                            :config="flatpickr.config"></flat-pickr>
+                    </b-form-group>
+                </div>
 
-            <div class="form-group">
-                <label>Quantity</label>
-                <input type="number" v-model="qtyNeeded">
-            </div>
+                <div class="col">
+                    <b-form-group label="Duration">
+                        <b-form-input v-model="form.duration"
+                            type="number"></b-form-input>
+                        <b-form-text>In hours</b-form-text>
+                    </b-form-group>
+                </div>
+            </b-form-row>
 
-            <div class="form-group">
-                <label>Threshold</label>
-                <input type="number" v-model="threshold">
-            </div>
+            <b-form-row>
+                <div class="col">
+                    <b-form-group label="Quantity">
+                        <b-form-input v-model="form.qty"
+                            type="number"></b-form-input>
+                    </b-form-group>
+                </div>
 
-            <div class="form-group">
-                <label>Start Price</label>
-                <input type="number" v-model="startPrice">
-            </div>
+                <div class="col">
+                    <b-form-group label="Start price">
+                        <b-input-group left="$">
+                            <b-form-input v-model="form.startPrice"
+                                type="number"
+                                step="0.01"></b-form-input>
+                        </b-input-group>
+                    </b-form-group>
+                </div>
+            </b-form-row>
+
+            <b-form-row>
+                <div class="col">
+                    <b-form-group label="Thresholds">
+                        <b-input-group right="%">
+                            <b-form-input v-model="form.threshold"
+                            type="text"></b-form-input>
+                        </b-input-group>
+                        <b-form-text>Comma-separated!</b-form-text>
+                    </b-form-group>
+                </div>
+            </b-form-row>
 
             <button type="submit" class="btn btn-primary">Save auction</button>
 
-        </form>
+        </b-form>
     </div>
 </template>
 
 <script>
+import moment from 'moment'
 import { createAuction } from '@/api/auction'
 import { getIngredientsForWeekAndDc } from '@/api/ingredient'
 
@@ -66,41 +104,69 @@ export default {
     data() {
         return {
             ingredients: [],
-            selectedIngredient: {},
-            week: '2017-W40',
-            startDate: '2017-08-23T10:00:00Z',
-            endDate: '2017-08-23T12:00:00Z',
-            qtyNeeded: 1000,
-            threshold: 40,
-            startPrice: 5.00
+            form: {
+                ingredient: {},
+                week: '2017-W40',
+                startDate: moment().toISOString(),
+                duration: 48,
+                qty: 1000,
+                threshold: "40,20",
+                startPrice: 5.00
+            },
+            flatpickr: {
+                config: {
+                    enableTime: true,
+                }
+            },
+            alert: {
+                error: {
+                    show: false,
+                    message: ''
+                }
+            }
         }
+    },
+
+    computed: {
+        weekState() {
+            return this.form.week.match(/\d{4}-W\d{2}/) ? null : 'invalid'
+        }
+    },
+
+    mounted() {
+        this.fetchIngredients()
     },
 
     methods: {
         saveAuction() {
             const auction = {
-                week: this.week,
-                start_date: this.startDate,
-                end_date: this.endDate,
-                ingredient: this.selectedIngredient,
-                qty: this.qtyNeeded,
-                threshold: [ this.threshold ], // TODO
-                max_price: this.startPrice,
+                week: this.form.week,
+                start_date: moment(this.form.startDate).toISOString(),
+                duration: this.form.duration * 60 * 60, // TODO: Make this more flexible
+                ingredient: this.form.ingredient,
+                qty: this.form.qty,
+                threshold: this.form.threshold.split(',').map(Number), // TODO: Fix this hack
+                max_price: this.form.startPrice,
                 country: 'US',
-                dc: 'TX', // TODO
-                duration: 0, // TODO
+                dc: 'TX', // TODO: Don't hardcode
             }
 
             createAuction(auction)
-                .then(res => console.info(res))
-                .catch(err => console.error(err))
+                .then(res => this.$router.push({ path: res.headers.location }))
+                .catch(err => {
+                    this.alert.error.message = err.message
+                    this.alert.error.show = true
+                })
         },
 
         fetchIngredients() {
-            getIngredientsForWeekAndDc(this.week, this.dc)
+            getIngredientsForWeekAndDc(this.form.week, this.form.dc)
                 .then(res => this.ingredients = res.data)
-                .catch(err => console.error(err))
-        }
+                .catch(err => {
+                    this.alert.error.message = err.message
+                    this.alert.error.show = true
+                })
+        },
     }
 }
 </script>
