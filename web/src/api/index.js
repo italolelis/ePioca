@@ -62,6 +62,8 @@ client.interceptors.response.use(response => response, error => {
     } else {
         console.log(error.message, error.config)
     }
+
+    throw error
 })
 
 export default client
