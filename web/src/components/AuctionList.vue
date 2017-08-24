@@ -4,7 +4,7 @@
             v-for="auction in auctions"
             :key="auction.id"
             :id="auction.id"
-            :ingredient="auction.ingredient"
+            :ingredient="auction.ingredient.name"
             :qty="auction.qty"
             :startTime="auction.start_date"
             :duration="auction.duration"

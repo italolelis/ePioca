@@ -1,6 +1,8 @@
 <template>
     <b-jumbotron>
-        <img src="/static/epioca.png" width="200">
+        <router-link :to="{ name: 'Dashboard' }">
+            <img src="/static/epioca.png" width="200">
+        </router-link>
     </b-jumbotron>
 
 </template>
