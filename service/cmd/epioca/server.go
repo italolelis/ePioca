@@ -93,7 +93,7 @@ func initRouter() chi.Router {
 
 func initAuctionRoutes(r chi.Router, db *sqlx.DB) {
 	handler := handlers.NewAuction(repo.NewAuction(db))
-	bidHandler := handlers.NewBidding(repo.NewBidRepo(db))
+	bidHandler := handlers.NewBidding(repo.NewBidRepo(db), repo.NewAuction(db))
 
 	r.Route("/auctions", func(r chi.Router) {
 		r.Get("/", handler.Index)

@@ -54,3 +54,8 @@ func NewAuction(id uuid.UUID) *Auction {
 func (a *Auction) IsScheduled() bool {
 	return a.Status == Scheduled
 }
+
+// IsCompleted verifies if an auction is Completed
+func (a *Auction) IsCompleted() bool {
+	return a.Status == Completed
+}
