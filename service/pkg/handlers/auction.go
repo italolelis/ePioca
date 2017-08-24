@@ -33,6 +33,7 @@ func (h *Auction) Index(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
+		log.WithError(err).Error("Error h.repo.Find")
 		JSON(w, http.StatusInternalServerError, "Failed during searching auctions")
 		return
 	}
@@ -51,6 +52,7 @@ func (h *Auction) Show(w http.ResponseWriter, r *http.Request) {
 
 	auctions, err := h.repo.FindByID(id)
 	if err != nil {
+		log.WithError(err).Error("Failed to create an auction")
 		JSON(w, http.StatusNotFound, "Failed during searching auctions")
 		return
 	}
