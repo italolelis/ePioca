@@ -12,7 +12,7 @@
             </ul>
         </div>
         <div>
-            My Bid {{ userBid.value }}
+            My Bid: {{ userBid.value }}
         </div>
         <div>
             time remaining
@@ -23,8 +23,8 @@
 <script>
     import axios from 'axios';
     import config from '@/config'
-    import { getAuction } from '@/api/getAuction'
-    import { getAuctionBids } from '@/api/getAuctionBids'
+    import { getAuctionFromId } from '@/api/getAuctionFromId'
+    import { getBidsFromId } from '@/api/getBidsFromId'
 
     export default {
         data() {
@@ -46,6 +46,12 @@
                 return bidA - bidB;
             },
 
+            filterUserFrom(id, response) {
+                return response.data.filter( (object) => {
+                    return id === object.user_id;
+                })[0];
+            },
+
             getBidsSorted(response) {
                 return response.data.map( (object) => { return object.value; })
                                     .sort(this.sortBids)
@@ -53,21 +59,18 @@
             },
 
             getAuction(id) {
-                getAuction(id).then(response => {this.auction = response.data[0] })
+                getAuctionFromId(id).then(response => {this.auction = response.data[0] })
                               .catch(error => { console.error(error) })
             },
 
             getAuctionBids(id) {
-                getAuctionBids(id).then(response => { this.lowestBids = this.getBidsSorted(response) })
+                getBidsFromId(id).then(response => { this.lowestBids = this.getBidsSorted(response) })
                                   .catch(error => { console.error(error) })
             },
 
             getUserBid(id) {
-                getAuctionBids(id).then(response => {
-                    this.userBid = response.data.filter( (object) => {
-                        return id === object.user_id;
-                    })[0];
-                });
+                getBidsFromId(id).then(response => { this.userBid = this.filterUserFrom(id, response) })
+                                       .catch(error => { console.error(error) })
             }
         }
     }

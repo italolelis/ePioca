@@ -25,11 +25,11 @@ func (r *BidRepo) FindByAuction(auctionID uuid.UUID) ([]*bid.Bid, error) {
 
 	query := `
         SELECT
-            b.auction_id, b.user_id, b.threshold, b.value
-        FROM
-            bids b
+        	*
+		FROM
+            bids
         WHERE
-            b.auction_id = $1
+            auction_id = $1
     `
 
 	err := r.db.Select(&bids, query, auctionID)
@@ -43,11 +43,11 @@ func (r *BidRepo) FindByUser(userID uuid.UUID) ([]*bid.Bid, error) {
 
 	query := `
         SELECT
-            b.auction_id, b.user_id, b.threshold, b.value
+			*
         FROM
-            bids b
+            bids
         WHERE
-            b.user_id = $1
+            "user.id" = $1
     `
 
 	err := r.db.Select(&bids, query, userID)
@@ -60,14 +60,13 @@ func (r *BidRepo) FindLatestByAuctionUser(auctionID uuid.UUID, userID uuid.UUID)
 	var bid bid.Bid
 
 	query := `
-        SELECT
-            b.auction_id, b.user_id, b.threshold, b.value, b.created
+        SELECT *
         FROM
-            bids b
+            bids
         WHERE
-			b.auction_id = $1 AND b.user_id = $2
+			auction_id = $1 AND "user.id" = $2
 		ORDER BY 
-			b.created DESC
+			created DESC
 		LIMIT 1	
     `
 
@@ -110,7 +109,7 @@ func (r *BidRepo) Add(bid *bid.Bid) error {
 	query := `
 		INSERT INTO
 			bids
-		VALUES (:id, :auction_id, :user_id, :threshold, :value, :created)
+			VALUES (:id, :auction_id, :user.id, :user.name, :threshold, :value, :created)
 	`
 
 	_, err := r.db.NamedExec(query, &bid)

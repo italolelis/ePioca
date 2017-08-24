@@ -1,4 +1,4 @@
-export const getAuctionBids = (id) => {
+export const getBidsFromId = (id) => {
     return Promise.resolve({
         "data": [
             {

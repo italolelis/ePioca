@@ -1,8 +1,11 @@
 <template>
-  <div id="app">
-    <app-header></app-header>
-    <router-view></router-view>
-  </div>
+    <div id="app">
+        <app-header></app-header>
+
+        <main class="container">
+            <router-view></router-view>
+        </main>
+    </div>
 </template>
 
 <script>

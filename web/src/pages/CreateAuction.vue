@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <section>
         <!-- TODO: Refactor these into alerts component -->
         <div class="row">
             <div class="col">
@@ -92,7 +92,7 @@
             <button type="submit" class="btn btn-primary">Save auction</button>
 
         </b-form>
-    </div>
+    </section>
 </template>
 
 <script>

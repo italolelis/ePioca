@@ -29,13 +29,18 @@ type Repository interface {
 	Remove(id uuid.UUID) error
 }
 
+type Ingredient struct {
+	Name string `json:"name" db:"name"`
+	SKU  string `json:"sku" db:"sku"`
+}
+
 // Auction represents an auction
 type Auction struct {
 	ID             uuid.UUID     `json:"id" db:"id"`
 	Week           string        `json:"week" db:"week"`
 	Country        string        `json:"country" db:"country"`
 	DC             string        `json:"dc" db:"dc"`
-	Ingredient     string        `json:"ingredient" db:"ingredient"`
+	Ingredient     *Ingredient   `json:"ingredient" db:"ingredient"`
 	Duration       time.Duration `json:"duration" db:"duration"`
 	StartDate      time.Time     `json:"start_date" db:"start_date"`
 	Qty            float32       `json:"qty" db:"qty"`
@@ -44,6 +49,13 @@ type Auction struct {
 	PriceIncrement float32       `json:"price_increment" db:"price_increment"`
 }
 
+/*
+func (a *Auction) Scan(src interface{}) error {
+	fmt.Printf("\n%+v\n", src)
+	panic("")
+	return nil
+}
+*/
 // NewAuction creates a new instance of auction
 func NewAuction(id uuid.UUID) *Auction {
 	return &Auction{ID: id}

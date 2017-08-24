@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/italolelis/epioca/service/pkg/domain/auction"
 	"github.com/italolelis/epioca/service/pkg/domain/bid"
+	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
 	log "github.com/sirupsen/logrus"
 )
@@ -90,22 +92,23 @@ func (h *Bidding) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	latestBid, err := h.repo.FindLatestByAuctionUser(bid.AuctionID, bid.UserID)
-	if err != nil {
+	latestBid, err := h.repo.FindLatestByAuctionUser(bid.AuctionID, bid.User.ID)
+	if err != nil && errors.Cause(err) != sql.ErrNoRows {
+		log.WithError(err).Error("")
 		JSON(w, http.StatusInternalServerError, "Failed during searching bids")
 		return
 	}
+	if errors.Cause(err) != sql.ErrNoRows {
+		if latestBid.Value <= bid.Value {
+			JSON(w, http.StatusInternalServerError, "Your bid value should be less than previous one")
+			return
+		}
 
-	if latestBid.Value < bid.Value {
-		JSON(w, http.StatusInternalServerError, "Your bid value should be less than previous one")
-		return
+		if auction.MaxPrice < bid.Value {
+			JSON(w, http.StatusInternalServerError, "Your bid value cannot be higher than maximum value defined per auction")
+			return
+		}
 	}
-
-	if auction.MaxPrice < bid.Value {
-		JSON(w, http.StatusInternalServerError, "Your bid value cannot be higher than maximum value defined per auction")
-		return
-	}
-
 	if err := h.repo.Add(bid); err != nil {
 		log.WithError(err).Error("Failed to create a bid")
 		JSON(w, http.StatusInternalServerError, "Failed to create a bid")
