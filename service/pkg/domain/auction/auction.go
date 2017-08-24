@@ -32,7 +32,6 @@ type Repository interface {
 // Auction represents an auction
 type Auction struct {
 	ID         uuid.UUID     `json:"id" db:"id"`
-	Status     string        `json:"status" db:"status"`
 	Week       string        `json:"week" db:"week"`
 	Country    string        `json:"country" db:"country"`
 	DC         string        `json:"dc" db:"dc"`
@@ -50,11 +49,21 @@ func NewAuction(id uuid.UUID) *Auction {
 }
 
 // IsScheduled verifies if an auction is scheduled
+func (a *Auction) Status() string {
+	if time.Now().After(a.StartDate.Add(a.Duration * time.Second)) {
+		return Completed
+	} else if time.Now().After(a.StartDate) {
+		return Running
+	}
+	return Scheduled
+}
+
+// IsScheduled verifies if an auction is scheduled
 func (a *Auction) IsScheduled() bool {
-	return a.Status == Scheduled
+	return a.Status() == Scheduled
 }
 
 // IsCompleted verifies if an auction is Completed
 func (a *Auction) IsCompleted() bool {
-	return a.Status == Completed
+	return a.Status() == Completed
 }

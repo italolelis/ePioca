@@ -28,11 +28,13 @@ func (h *Auction) Index(w http.ResponseWriter, r *http.Request) {
 
 	auctions, err := h.repo.Find(status)
 	if err == repo.ErrInvalidStatusProvided {
+		log.WithError(err).Warn("Failed to parse the UUID")
 		JSON(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	if err != nil {
+		log.WithError(err).Warn("Failed to parse the UUID")
 		JSON(w, http.StatusInternalServerError, "Failed during searching auctions")
 		return
 	}
@@ -51,6 +53,7 @@ func (h *Auction) Show(w http.ResponseWriter, r *http.Request) {
 
 	auctions, err := h.repo.FindByID(id)
 	if err != nil {
+		log.WithError(err).Error("Failed to create an auction")
 		JSON(w, http.StatusNotFound, "Failed during searching auctions")
 		return
 	}
@@ -67,7 +70,6 @@ func (h *Auction) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	act.Status = auction.Running
 	if err := h.repo.Add(act); err != nil {
 		log.WithError(err).Error("Failed to create an auction")
 		JSON(w, http.StatusInternalServerError, "FFailed to create an auction")

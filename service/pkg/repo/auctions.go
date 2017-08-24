@@ -30,19 +30,25 @@ func NewAuction(db *sqlx.DB) auction.Repository {
 // Find returns a slice of all auctions
 func (r *auctionRepo) Find(status string) ([]*auction.Auction, error) {
 	auctions := make([]*auction.Auction, 0)
+	var err error
 
-	if len(status) != 0 {
-		if !auction.IsValidStatus(status) {
-			return nil, ErrInvalidStatusProvided
-		}
+	if status != "" && !auction.IsValidStatus(status) {
+		return nil, ErrInvalidStatusProvided
+	}
 
-		if err := r.db.Select(&auctions, "SELECT * FROM auctions WHERE status = $1", status); err != nil && err != sql.ErrNoRows {
-			return auctions, errors.Wrap(err, "r.db.Select All auctions")
-		}
-	} else {
-		if err := r.db.Select(&auctions, "SELECT * FROM auctions"); err != nil {
-			return auctions, errors.Wrap(err, "r.db.Select All auctions")
-		}
+	switch status {
+	case auction.Scheduled:
+		err = r.db.Select(&auctions, "SELECT * FROM auctions WHERE now() < start_date")
+	case auction.Running:
+		err = r.db.Select(&auctions, "SELECT * FROM auctions WHERE now() > start_date AND now() < start_date + duration * interval '1 second'")
+	case auction.Completed:
+		err = r.db.Select(&auctions, "SELECT * FROM auctions WHERE now() > start_date + duration * interval '1 second'")
+	default:
+		err = r.db.Select(&auctions, "SELECT * FROM auctions")
+	}
+
+	if err != nil && err != sql.ErrNoRows {
+		return nil, err
 	}
 
 	return auctions, nil
@@ -62,9 +68,9 @@ func (r *auctionRepo) FindByID(id uuid.UUID) (*auction.Auction, error) {
 // Add upserts auction into storage
 func (r *auctionRepo) Add(auction *auction.Auction) error {
 	if _, err := r.db.NamedExec(`INSERT INTO auctions 
-		VALUES (:id, :status, :week, :country, :dc, :ingredient, :duration, :start_date, :end_date, :qty, :threshold, :max_price)
+		VALUES (:id, :week, :country, :dc, :ingredient, :duration, :start_date, :qty, :threshold, :max_price)
 			ON CONFLICT (id) DO
-		UPDATE SET  (status, week, country, dc, ingredient, duration, start_date, end_date, qty, threshold, max_price) =  (:status, :week, :country, :dc, :ingredient, :duration, :start_date, :end_date, :qty, :threshold, :max_price)
+		UPDATE SET  (week, country, dc, ingredient, duration, start_date, qty, threshold, max_price) =  (:week, :country, :dc, :ingredient, :duration, :start_date, :qty, :threshold, :max_price)
 	`,
 		auction); err != nil {
 		return errors.Wrap(err, "Insert one auction")
