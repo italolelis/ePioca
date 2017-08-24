@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/italolelis/epioca/service/pkg/domain/bid"
@@ -32,7 +33,7 @@ func (h *Bidding) ShowByAuction(w http.ResponseWriter, r *http.Request) {
 
 	bids, err := h.repo.FindByAuction(id)
 	if err != nil {
-		JSON(w, http.StatusInternalServerError, "Failed during searching bids")
+		JSON(w, http.StatusInternalServerError, "Failed during searching latest bids")
 		return
 	}
 
@@ -68,9 +69,21 @@ func (h *Bidding) Create(w http.ResponseWriter, r *http.Request) {
 
 	bid := bid.NewBid(uuid.NewV4())
 	bid.AuctionID = auctionID
+	bid.Created = time.Now()
 	if err := json.NewDecoder(r.Body).Decode(bid); err != nil {
 		log.WithError(err).Warn("Failed to decode body request during creating a bid")
 		JSON(w, http.StatusBadRequest, "Failed to decode body request")
+		return
+	}
+
+	latestBid, err := h.repo.FindLatestByAuctionUser(bid.AuctionID, bid.UserID)
+	if err != nil {
+		JSON(w, http.StatusInternalServerError, "Failed during searching bids")
+		return
+	}
+
+	if latestBid.Value < bid.Value {
+		JSON(w, http.StatusInternalServerError, "Your bid value should be less than previous one")
 		return
 	}
 

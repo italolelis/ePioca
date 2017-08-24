@@ -55,6 +55,31 @@ func (r *BidRepo) FindByUser(userID uuid.UUID) ([]*bid.Bid, error) {
 	return bids, err
 }
 
+// FindLatestByAuctionUser func
+func (r *BidRepo) FindLatestByAuctionUser(auctionID uuid.UUID, userID uuid.UUID) (*bid.Bid, error) {
+	var bid bid.Bid
+
+	query := `
+        SELECT
+            b.auction_id, b.user_id, b.threshold, b.value, b.created
+        FROM
+            bids b
+        WHERE
+			b.auction_id = $1 AND b.user_id = $2
+		ORDER BY 
+			b.created DESC
+		LIMIT 1	
+    `
+
+	err := r.db.Get(&bid, query, auctionID, userID)
+
+	if err != nil {
+		return &bid, errors.Wrap(err, "Get latest auction user bid")
+	}
+
+	return &bid, nil
+}
+
 // FindLowest func
 func (r *BidRepo) FindLowest(auctionID uuid.UUID) (*bid.Bid, error) {
 	var bid bid.Bid
@@ -85,8 +110,9 @@ func (r *BidRepo) Add(bid *bid.Bid) error {
 	query := `
 		INSERT INTO
 			bids
-		VALUES (:id, :auction_id, :user_id, :threshold, :value)
+		VALUES (:id, :auction_id, :user_id, :threshold, :value, :created)
 	`
+
 	_, err := r.db.NamedExec(query, &bid)
 
 	if err != nil {

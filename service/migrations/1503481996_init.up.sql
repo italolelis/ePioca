@@ -22,6 +22,7 @@ CREATE TABLE public.bids (
     "user_id" UUID NOT NULL,
     "threshold" integer NOT NULL,
     "value" float8 NOT NULL,
+    "created" TIMESTAMP NOT NULL DEFAULT 'now()',
     PRIMARY KEY ("id"),
     CONSTRAINT "fk_auctions" FOREIGN KEY ("auction_id") REFERENCES "public"."auctions"("id") ON DELETE CASCADE
 );
