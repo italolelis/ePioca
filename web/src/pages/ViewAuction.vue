@@ -13,24 +13,7 @@
             </div>
         </div>
 
-        <!-- TODO: Should be a component -->
-        <section>
-            <div class="row">
-                <div class="col">
-                    <h3>Lowest bids</h3>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col" v-for="bid in lowestBids">
-                    <low-bid
-                        :user="bid.user.name"
-                        :threshold="bid.threshold"
-                        :value="bid.value"
-                        ></low-bid>
-                </div>
-            </div>
-        </section>
+        <low-bid-list :auction-id="auctionId"></low-bid-list>
 
         <div class="row">
 
@@ -57,7 +40,7 @@
                 </div>
 
                 <div v-else>
-                    <count-down :end-date="endDate"></count-down>
+                    <epioca-countdown :end-date="endDate"></epioca-countdown>
                 </div>
             </div>
 
@@ -66,22 +49,21 @@
 </template>
 
 <script>
-    import axios from 'axios';
     import config from '@/config'
     import moment from 'moment'
     import { getUserRole } from '@/api'
-    import { getAuctionById, getBidsByAuction } from '@/api/auction'
+    import { getAuctionById } from '@/api/auction'
     import AuctionBidList from '@/components/AuctionBidList'
     import BidForm from '@/components/BidForm'
-    import CountDown from '@/components/CountDown'
-    import LowBid from '@/components/LowBid'
+    import EpiocaCountdown from '@/components/EpiocaCountdown'
+    import LowBidList from '@/components/LowBidList'
 
     export default {
         components: {
             AuctionBidList,
             BidForm,
-            CountDown,
-            LowBid,
+            EpiocaCountdown,
+            LowBidList,
         },
 
         data() {
@@ -115,13 +97,8 @@
             getAuctionById(this.auctionId)
                 .then(res => this.auction = res.data)
                 .catch(err => console.error(err))
-
-            // Get low bids to show
-            // TODO: should really be in its own component
-            getBidsByAuction(this.auctionId, true)
-                .then(res => this.lowestBids = res.data)
-                .catch(err => console.error(err))
         },
+
     }
 </script>
 
