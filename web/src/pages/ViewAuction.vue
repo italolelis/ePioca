@@ -87,7 +87,7 @@ export default {
         },
 
         endDate() {
-            return moment(this.auction.startDate).add(this.auction.duration, 's').format()
+            return moment(this.auction.start_date).add(this.auction.duration, 's').format()
         },
 
         auctionId() {
