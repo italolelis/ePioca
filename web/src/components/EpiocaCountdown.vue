@@ -24,21 +24,45 @@
         },
 
         mounted() {
-            this.getCountDown()
+            this.setCountdown()
         },
 
         methods: {
-            getCountDown() {
-                this.timeInterval = setInterval(function(){
-                    let difference    = moment(this.endDate).diff(moment(), 'seconds');
-                    let timeRemaining = moment().countdown(this.endDate).toString();
-                    if ('' === timeRemaining || difference < 0) {
-                        this.timeRemaining = 'Finished';
-                        clearInterval(this.timeInterval);
-                        return;
-                    }
-                    this.timeRemaining = `${timeRemaining} remaining`;
+            getTimeRemaining() {
+                return moment().countdown(this.endDate).toString();
+            },
+
+            getTimeDifference() {
+                return moment(this.endDate).diff(moment(), 'seconds');
+            },
+
+            timeIsUp() {
+                return '' === this.getTimeRemaining();
+            },
+
+            timeHasPassed() {
+                return 0 > this.getTimeDifference()
+            },
+
+            clearCurrentInterval() {
+                this.setTimeRemaining('Finished');
+                clearInterval(this.timeInterval);
+            },
+
+            getTimeInterval() {
+                return setInterval(function(){
+                    this.timeIsUp() || this.timeHasPassed()
+                        ? this.clearCurrentInterval()
+                        : this.setTimeRemaining(`${this.getTimeRemaining()} remaining`);
                 }.bind(this), this.interval);
+            },
+
+            setTimeRemaining(value) {
+                this.timeRemaining = value;
+            },
+
+            setCountdown() {
+                this.timeInterval = this.getTimeInterval();
             }
         }
     }
