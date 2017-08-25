@@ -80,13 +80,16 @@
             <b-form-row>
                 <div class="col">
                     <b-form-group label="Thresholds">
-                        <b-input-group right="%">
-                            <b-form-input v-model="form.threshold"
-                            type="text"></b-form-input>
-                        </b-input-group>
-                        <b-form-text>Comma-separated!</b-form-text>
+                         <div v-for="(threshold, index) in form.threshold">
+                            <b-input-group right="%">
+                                <b-form-input v-model="form.threshold[index]" type="text" :state="thresholdState"></b-form-input>
+                                <b-btn class="btn-square" variant="danger" @click="removeThreshold(index)">-</b-btn>
+                                <b-btn class="btn-square" variant="info" @click="addThreshold()">+</b-btn>
+                            </b-input-group>
+                        </div>
                     </b-form-group>
                 </div>
+                <div class="col"></div>
             </b-form-row>
 
             <button type="submit" class="btn btn-primary">Save auction</button>
@@ -110,7 +113,7 @@ export default {
                 startDate: moment().toISOString(),
                 duration: 3600,
                 qty: 1000,
-                threshold: "60,40",
+                threshold: [0],
                 startPrice: 5.00,
                 dc: 'TX'  // TODO: Don't hardcode
             },
@@ -131,6 +134,10 @@ export default {
     computed: {
         weekState() {
             return this.form.week.match(/\d{4}-W\d{2}/) ? null : 'invalid'
+        },
+        thresholdState() {
+            var sum = this.form.threshold.reduce((a,b)=>Number(a)+Number(b))
+            return sum <= 100 ? null : 'invalid';
         }
     },
 
@@ -151,7 +158,7 @@ export default {
                     name: ingredient[1]
                 },
                 qty: this.form.qty,
-                threshold: this.form.threshold.split(',').map(Number), // TODO: Fix this hack
+                threshold: this.form.threshold,
                 max_price: this.form.startPrice,
                 country: 'US',
                 dc: this.form.dc,
@@ -178,10 +185,23 @@ export default {
                     this.alert.error.show = true
                 })
         },
+        removeThreshold(index) {
+            this.form.threshold.splice(index, 1)
+        },
+        addThreshold() {
+             var sum = this.form.threshold.reduce((a,b)=>Number(a)+Number(b))
+             if (sum < 100) {
+                this.form.threshold.push(0)
+             }
+        },
     }
 }
 </script>
 
 <style>
+
+.btn.btn-square {
+  border-radius: 0;
+}
 
 </style>
