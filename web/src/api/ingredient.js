@@ -1,6 +1,7 @@
 import client from '@/api'
+import { gateway } from '@/config'
 
-const TAPIOCA_URI = 'https://gw-staging.hellofresh.com/scm'
+const TAPIOCA_URI = `${gateway.uri}/scm`
 
 export const getIngredientsForWeekAndDc = (week, dc) =>
     client.get(`${TAPIOCA_URI}/product-summaries`, {
