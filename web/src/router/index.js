@@ -9,6 +9,7 @@ import Dashboard from '@/pages/Dashboard'
 import CreateAuction from '@/pages/CreateAuction'
 import NotFound from '@/pages/NotFound'
 import ViewAuction from '@/pages/ViewAuction'
+import Winners from '@/pages/Winners'
 
 Vue.use(Router);
 
@@ -36,6 +37,12 @@ const router = new Router({
             path: '/auctions/:id',
             name: 'View Auction',
             component: ViewAuction,
+            meta: { requiresAuth: true }
+        },
+        {
+            path: '/auctions/:id/winners',
+            name: 'Winners',
+            component: Winners,
             meta: { requiresAuth: true }
         },
         // 404 catch all route
