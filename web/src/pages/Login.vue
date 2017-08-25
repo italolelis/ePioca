@@ -91,7 +91,7 @@ export default {
                     this.$router.push(redirectTo)
                 })
                 .catch((err) => {
-                    if (err.response.status == 401) 
+                    if (err.response && err.response.status == 401) 
                         this.showLoginError = true
                     else {
                         throw err
