@@ -64,6 +64,7 @@ export default {
                 .then(({ data }) => {
                     setAccessToken(data.access_token)
                     setUserId(data.user_data.id)
+                    setUserName(data.user_data.username)
                     setUserRole(data.user_data.metadata.roles)
                     this.$router.push(redirectTo)
                 })

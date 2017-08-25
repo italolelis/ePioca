@@ -2,11 +2,13 @@
     <section>
         <div class="row">
             <div class="col">
-                <h2>{{ auction.ingredient.name }}</h2>
-                <b-badge>{{ auction.status }}</b-badge>
+                <h2>
+                    {{ auction.ingredient.name }}
+                    <b-badge>{{ auction.status }}</b-badge>
+                </h2>
 
                 <p class="lead">
-                    Auction to deliver {{ auction.qty }} units of {{ auction.ingredient.sku }} in {{ auction.week }}
+                    Auction to supply {{ auction.qty }} units of {{ auction.ingredient.sku }} in {{ auction.week }}
                 </p>
             </div>
         </div>
@@ -50,16 +52,12 @@
             </div>
 
             <div class="col">
-                <div v-if="auction.status === 'running'">
-                    Time remaining...
-                </div>
-
                 <div v-if="auction.status === 'scheduled'">
-                    Scheduled for...
+                    Scheduled for {{ scheduledDate }}
                 </div>
 
-                <div v-if="auction.status === 'completed'">
-                    Finished at...
+                <div v-else>
+                    <count-down :end-date="endDate"></count-down>
                 </div>
             </div>
 
@@ -70,16 +68,19 @@
 <script>
     import axios from 'axios';
     import config from '@/config'
+    import moment from 'moment'
     import { getUserRole } from '@/api'
     import { getAuctionById, getBidsByAuction } from '@/api/auction'
     import AuctionBidList from '@/components/AuctionBidList'
     import BidForm from '@/components/BidForm'
+    import CountDown from '@/components/CountDown'
     import LowBid from '@/components/LowBid'
 
     export default {
         components: {
             AuctionBidList,
             BidForm,
+            CountDown,
             LowBid,
         },
 
@@ -94,7 +95,15 @@
 
         computed: {
             isBuyer() {
-                return getUserRole() == 'supplier'
+                return getUserRole() !== 'supplier'
+            },
+
+            scheduledDate() {
+                return moment(this.auction.startDate).format('dddd, MMMM Do YYYY, h:mm:ss a')
+            },
+
+            endDate() {
+                return moment(this.auction.startDate).add(this.auction.duration, 's').format()
             },
 
             auctionId() {

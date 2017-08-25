@@ -48,6 +48,8 @@ type Auction struct {
 	Threshold      pq.Int64Array `json:"threshold" db:"threshold"`
 	MaxPrice       float32       `json:"max_price" db:"max_price"`
 	PriceIncrement float32       `json:"price_increment" db:"price_increment"`
+	VStatus        string        `json:"status, omitempty" db:"-"`
+	VTimeRemaining float64       `json:"time_remaining, omitempty" db:"-"`
 }
 
 func (a *Auction) TimeRemaining() time.Duration {

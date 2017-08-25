@@ -38,6 +38,11 @@ func (h *Auction) Index(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	for _, a := range auctions {
+		a.VStatus = a.Status()
+		a.VTimeRemaining = a.TimeRemaining().Seconds()
+	}
+
 	JSON(w, http.StatusOK, auctions)
 }
 
@@ -56,6 +61,9 @@ func (h *Auction) Show(w http.ResponseWriter, r *http.Request) {
 		JSON(w, http.StatusNotFound, "Failed during searching auctions")
 		return
 	}
+
+	auctions.VStatus = auctions.Status()
+	auctions.VTimeRemaining = auctions.TimeRemaining().Seconds()
 
 	JSON(w, http.StatusOK, auctions)
 }
