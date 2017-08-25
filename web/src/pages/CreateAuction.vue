@@ -20,9 +20,10 @@
                         <b-form-input
                             type="text"
                             v-model="form.week"
-                            @change="fetchIngredients"
+                            @change="weekChanged"
                             :state="weekState"
-                            required></b-form-input>
+                            placeholder="2017-W34"
+                            :required="true"></b-form-input>
                     </b-form-group>
                 </div>
 
@@ -33,7 +34,8 @@
                             :options="ingredients"
                             value-field="skuName"
                             text-field="productName"
-                            required>
+                            @input="ingredientChanged"
+                            :required="true">
                         </b-form-select>
                     </b-form-group>
                 </div>
@@ -79,17 +81,18 @@
 
             <b-form-row>
                 <div class="col">
-                    <b-form-group label="Thresholds">
-                         <div v-for="(threshold, index) in form.threshold">
-                            <b-input-group right="%">
-                                <b-form-input v-model="form.threshold[index]" type="text" :state="thresholdState"></b-form-input>
-                                <b-btn class="btn-square" variant="danger" @click="removeThreshold(index)">-</b-btn>
-                                <b-btn class="btn-square" variant="info" @click="addThreshold()">+</b-btn>
-                            </b-input-group>
-                        </div>
+                    <b-form-group label="Thresholds" class="thresholds">
+                        <b-input-group right="%" v-for="(threshold, index) in form.threshold">
+                            <b-form-input v-model="form.threshold[index]" type="text" :state="thresholdState"></b-form-input>
+                            <b-btn class="btn-square" variant="danger" v-if="index !== 0" @click="removeThreshold(index)">-</b-btn>
+                        </b-input-group>
                     </b-form-group>
                 </div>
-                <div class="col"></div>
+                <div class="col">
+                    <b-form-group label="&nbsp;">
+                        <b-btn class="btn" variant="info" @click="addThreshold()">Add Threshold</b-btn>
+                    </b-form-group>
+                </div>
             </b-form-row>
 
             <button type="submit" class="btn btn-primary">Save auction</button>
@@ -106,13 +109,17 @@ import { getIngredientsForWeekAndDc } from '@/api/ingredient'
 export default {
     data() {
         return {
-            ingredients: [],
+            ingredients: [{
+                skuName: null,
+                productName: 'Please select...',
+                disabled: true
+            }],
             form: {
-                ingredient: {},
-                week: '2017-W34',
+                ingredient: null,
+                week: '',
                 startDate: moment().toISOString(),
                 duration: 3600,
-                qty: 1000,
+                qty: null,
                 threshold: [0],
                 startPrice: 5.00,
                 dc: 'TX'  // TODO: Don't hardcode
@@ -135,14 +142,14 @@ export default {
         weekState() {
             return this.form.week.match(/\d{4}-W\d{2}/) ? null : 'invalid'
         },
-        thresholdState() {
-            var sum = this.form.threshold.reduce((a,b)=>Number(a)+Number(b))
-            return sum <= 100 ? null : 'invalid';
-        }
-    },
 
-    mounted() {
-        this.fetchIngredients()
+        thresholdState() {
+            return this.getTotalThreshold <= 100 ? null : 'invalid';
+        },
+
+        getTotalThreshold() {
+            return this.form.threshold.reduce((a, b) => parseInt(a, 10) + parseInt(b, 10))
+        }
     },
 
     methods: {
@@ -152,14 +159,14 @@ export default {
             const auction = {
                 week: this.form.week,
                 start_date: moment(this.form.startDate).toISOString(),
-                duration: this.form.duration * 60, // TODO: Make this more flexible
+                duration: parseInt(this.form.duration, 10) * 60, // TODO: Make this more flexible
                 ingredient: {
                     sku: ingredient[0],
                     name: ingredient[1]
                 },
-                qty: this.form.qty,
-                threshold: this.form.threshold,
-                max_price: this.form.startPrice,
+                qty: parseFloat(this.form.qty),
+                threshold: this.form.threshold.map(t => parseInt(t, 10)),
+                max_price: parseFloat(this.form.startPrice),
                 country: 'US',
                 dc: this.form.dc,
             }
@@ -172,12 +179,33 @@ export default {
                 })
         },
 
+        weekChanged() {
+            if (this.weekState === 'invalid') return
+            this.fetchIngredients()
+        },
+
+        ingredientChanged(value) {
+            const ingredient = value.split('|')
+            this.form.qty = ingredient[2]
+        },
+
         fetchIngredients() {
             getIngredientsForWeekAndDc(this.form.week, this.form.dc)
-                .then(res => {
-                    this.ingredients = res.data.data.map(i => {
-                        i.skuName = `${i.productSku}|${i.productName}`
+                .then(({ data }) => {
+                    if (data.data.length === 0) {
+                        return
+                    }
+
+                    this.ingredients = data.data.map(i => {
+                        i.skuName = `${i.productSku}|${i.productName}|${i.qtyNeeded}`
                         return i
+                    })
+
+                    this.ingredient = null
+                    this.ingredients.unshift({
+                        skuName: null,
+                        productName: 'Please select...',
+                        disabled: true
                     })
                 })
                 .catch(err => {
@@ -185,12 +213,13 @@ export default {
                     this.alert.error.show = true
                 })
         },
+
         removeThreshold(index) {
             this.form.threshold.splice(index, 1)
         },
+
         addThreshold() {
-             var sum = this.form.threshold.reduce((a,b)=>Number(a)+Number(b))
-             if (sum < 100) {
+             if (this.getTotalThreshold < 100) {
                 this.form.threshold.push(0)
              }
         },
@@ -198,10 +227,12 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
 .btn.btn-square {
-  border-radius: 0;
+    border-radius: 0;
 }
 
+.thresholds .input-group {
+    margin-bottom: 1rem;
+}
 </style>

@@ -14,39 +14,41 @@
 </template>
 
 <script>
-    import AuctionListItem from '@/components/AuctionListItem'
-    import { getAuctionsByStatus } from '@/api/auction';
-    import config from '@/config'
+import AuctionListItem from '@/components/AuctionListItem'
+import { getAuctionsByStatus } from '@/api/auction';
+import config from '@/config'
+import { registerFor } from '@/api/ws'
 
-    export default {
-        components: {
-            AuctionListItem
-        },
+export default {
+    components: {
+        AuctionListItem
+    },
 
-        props: {
-            filter: {
-                type: String
-            }
-        },
+    props: {
+        filter: {
+            type: String
+        }
+    },
 
-        data() {
-            return {
-                auctions: []
-            }
-        },
+    data() {
+        return {
+            auctions: []
+        }
+    },
 
-        mounted() {
-            this.loadAuctions()
-        },
+    mounted() {
+        this.loadAuctions()
+        registerFor('auction_created', this.loadAuctions)
+    },
 
-        methods: {
-            loadAuctions() {
-                getAuctionsByStatus(this.filter)
-                    .then(({ data }) => this.auctions = data)
-                    .catch(err => console.error(err))
-            }
+    methods: {
+        loadAuctions() {
+            getAuctionsByStatus(this.filter)
+                .then(({ data }) => this.auctions = data)
+                .catch(err => console.error(err))
         }
     }
+}
 </script>
 
 <style scoped></style>
