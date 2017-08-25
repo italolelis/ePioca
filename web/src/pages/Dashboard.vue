@@ -2,6 +2,9 @@
     <section>
 
         <div class="row" v-if="userRole === 'buyer'">
+            <router-link :to="{ name: 'Create Auction' }" class="btn btn-primary">
+                Create Auction
+            </router-link>
         </div>
 
         <div class="row">

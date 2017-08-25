@@ -31,7 +31,7 @@
                         <b-form-select
                             v-model="form.ingredient"
                             :options="ingredients"
-                            value-field="productSku"
+                            value-field="skuName"
                             text-field="productName"
                             required>
                         </b-form-select>
@@ -53,7 +53,7 @@
                     <b-form-group label="Duration">
                         <b-form-input v-model="form.duration"
                             type="number"></b-form-input>
-                        <b-form-text>In hours</b-form-text>
+                        <b-form-text>In minutes</b-form-text>
                     </b-form-group>
                 </div>
             </b-form-row>
@@ -108,10 +108,11 @@ export default {
                 ingredient: {},
                 week: '2017-W40',
                 startDate: moment().toISOString(),
-                duration: 48,
+                duration: 3600,
                 qty: 1000,
                 threshold: "40,20",
-                startPrice: 5.00
+                startPrice: 5.00,
+                dc: 'TX'  // TODO: Don't hardcode
             },
             flatpickr: {
                 config: {
@@ -139,16 +140,21 @@ export default {
 
     methods: {
         saveAuction() {
+            const ingredient = this.form.ingredient.split('|')
+
             const auction = {
                 week: this.form.week,
                 start_date: moment(this.form.startDate).toISOString(),
-                duration: this.form.duration * 60 * 60, // TODO: Make this more flexible
-                ingredient: this.form.ingredient,
+                duration: this.form.duration * 60, // TODO: Make this more flexible
+                ingredient: {
+                    sku: ingredient[0],
+                    name: ingredient[1]
+                },
                 qty: this.form.qty,
                 threshold: this.form.threshold.split(',').map(Number), // TODO: Fix this hack
                 max_price: this.form.startPrice,
                 country: 'US',
-                dc: 'TX', // TODO: Don't hardcode
+                dc: this.form.dc,
             }
 
             createAuction(auction)
@@ -161,7 +167,12 @@ export default {
 
         fetchIngredients() {
             getIngredientsForWeekAndDc(this.form.week, this.form.dc)
-                .then(res => this.ingredients = res.data)
+                .then(res => {
+                    this.ingredients = res.data.data.map(i => {
+                        i.skuName = `${i.productSku}|${i.productName}`
+                        return i
+                    })
+                })
                 .catch(err => {
                     this.alert.error.message = err.message
                     this.alert.error.show = true

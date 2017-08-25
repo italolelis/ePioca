@@ -1,16 +1,6 @@
 <template>
     <div class="container">
-        <p align="center">
-            <img src="https://cdn.hellofresh.com/de/cms/press/HelloFresh_Logo.png?v=2016" width="150">
-        </p>
-
         <form class="form-horizontal"  @submit.prevent="attemptLogin({ username, password })">
-            <div class="row">
-                <div class="col-md-6 mx-auto">
-                    <h2>ePioca Login</h2>
-                    <hr>
-                </div>
-            </div>
 
             <div class="row">
                 <div class="col-md-6 mx-auto">
