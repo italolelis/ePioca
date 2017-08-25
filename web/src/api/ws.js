@@ -16,7 +16,7 @@ ws.onmessage = ({ data }) => {
 
         if (messageRegister[message.type]) {
             console.info(`Dispatching ${message.type}`)
-            messageRegister[message.type].forEach(cb => cb())
+            messageRegister[message.type].forEach(cb => cb(message))
         }
     } catch (e) {
         console.error(e)
