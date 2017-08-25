@@ -82,7 +82,7 @@
             <b-form-row>
                 <div class="col">
                     <b-form-group label="Thresholds" class="thresholds">
-                        <b-input-group right="%" v-for="(threshold, index) in form.threshold">
+                        <b-input-group right="%" v-for="(threshold, index) in form.threshold" :key='threshold'>
                             <b-form-input v-model="form.threshold[index]" type="text" :state="thresholdState"></b-form-input>
                             <b-btn class="btn-square" variant="danger" v-if="index !== 0" @click="removeThreshold(index)">-</b-btn>
                         </b-input-group>
