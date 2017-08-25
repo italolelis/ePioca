@@ -1,104 +1,123 @@
 <template>
-    <div class="container">
-        <div class="alert alert-success" role="alert">
-            <h4 class="alert-heading">Auction for {{ auction.ingredient }}</h4>
-            <p> {{ auction.qty }} units </p>
-        </div>
+    <section>
         <div class="row">
-            <div v-for="threshold in auction.thresholds" class="col">
-                <p> {{ threshold }} % </p>
-                <p><strong> Lowest bids are </strong></p>
-                <ul>
-                    <li v-for="bid in lowestBids">
-                        {{ bid.toFixed(2) }} $
-                    </li>
-                    <li> <strong> Your bid:  {{ userBid.value.toFixed(2) }} $ </strong></li>
-                </ul>
-                <p style="margin-bottom:0px;"><strong> Time Remaining </strong></p>
-                <p> {{ auction.end_date }} </p>
-                <input name="amount" class="form-control" v-model="amount" placeholder="Amount" required autofocus>
-                <button type="submit" class="btn btn-primary btn-block" style="margin-top:5px;">Place bid</button>
+            <div class="col">
+                <h2>{{ auction.ingredient.name }}</h2>
+                <b-badge>{{ auction.status }}</b-badge>
+
+                <p class="lead">
+                    Auction to deliver {{ auction.qty }} units of {{ auction.ingredient.sku }} in {{ auction.week }}
+                </p>
             </div>
         </div>
-    </div>
+
+        <!-- TODO: Should be a component -->
+        <section>
+            <div class="row">
+                <div class="col">
+                    <h3>Lowest bids</h3>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col" v-for="bid in lowestBids">
+                    <low-bid
+                        :user="bid.user.name"
+                        :threshold="bid.threshold"
+                        :value="bid.value"
+                        ></low-bid>
+                </div>
+            </div>
+        </section>
+
+        <div class="row">
+
+            <div class="col-md-8" v-if="!isBuyer">
+                <bid-form
+                    v-for="threshold in auction.threshold"
+                    :key="threshold"
+                    :threshold="threshold"
+                    :qty="auction.qty"></bid-form>
+            </div>
+
+            <div class="col-md-8" v-if="isBuyer">
+                <auction-bid-list
+                    class="auction-bid-list"
+                    v-for="threshold in auction.threshold"
+                    :key="threshold"
+                    :threshold="threshold"
+                    :auction-id="auctionId"></auction-bid-list>
+            </div>
+
+            <div class="col">
+                <div v-if="auction.status === 'running'">
+                    Time remaining...
+                </div>
+
+                <div v-if="auction.status === 'scheduled'">
+                    Scheduled for...
+                </div>
+
+                <div v-if="auction.status === 'completed'">
+                    Finished at...
+                </div>
+            </div>
+
+        </div>
+    </section>
 </template>
 
 <script>
     import axios from 'axios';
     import config from '@/config'
-    import { getAuctionFromId } from '@/api/getAuctionFromId'
-    import { getBidsFromId } from '@/api/getBidsFromId'
+    import { getUserRole } from '@/api'
+    import { getAuctionById, getBidsByAuction } from '@/api/auction'
+    import AuctionBidList from '@/components/AuctionBidList'
+    import BidForm from '@/components/BidForm'
+    import LowBid from '@/components/LowBid'
 
     export default {
+        components: {
+            AuctionBidList,
+            BidForm,
+            LowBid,
+        },
+
         data() {
             return {
-                auction : {},
-                lowestBids: {},
-                userBid: {}
+                auction: {
+                    ingredient: {}
+                },
+                lowestBids: [],
             }
         },
 
-        mounted() {
-            this.getAuction('theId');
-            this.getAuctionBids('theId');
-            this.getUserBid(2)
+        computed: {
+            isBuyer() {
+                return getUserRole() == 'supplier'
+            },
+
+            auctionId() {
+                return this.$route.params.id
+            }
         },
 
-        methods: {
-            getAuctionId() {
-                return this.$route.params.id;
-            },
+        created() {
+            getAuctionById(this.auctionId)
+                .then(res => this.auction = res.data)
+                .catch(err => console.error(err))
 
-            getUserId() {
-                return localStorage.getItem('user_role');
-            },
-
-            sortBids(bidA, bidB) {
-                return bidA - bidB;
-            },
-
-            filterUserFrom(id, response) {
-                return response.data.filter( (object) => {
-                    return id === object.user_id;
-                })[0];
-            },
-
-            getBidsSorted(response) {
-                return response.data.map( (object) => { return object.value; })
-                                    .sort(this.sortBids)
-                                    .slice(0, 3);
-            },
-
-            getAuction() {
-                getAuctionFromId(this.getAuctionId()).then(response => {this.auction = response.data[0] })
-                                                     .catch(error => { console.error(error) })
-            },
-
-            getAuctionBids() {
-                getBidsFromId(this.getAuctionId()).then(response => { this.lowestBids = this.getBidsSorted(response) })
-                                                  .catch(error => { console.error(error) })
-            },
-
-            getUserBid(id) {
-                getBidsFromId(this.getUserId()).then(response => { this.userBid = this.filterUserFrom(id, response) })
-                                               .catch(error => { console.error(error) })
-            }
-        }
+            // Get low bids to show
+            // TODO: should really be in its own component
+            getBidsByAuction(this.auctionId, true)
+                .then(res => this.lowestBids = res.data)
+                .catch(err => console.error(err))
+        },
     }
 </script>
 
 <style scoped>
-    .col{
-        background-color: #f5f5f5;
-        color: #000000;
-        padding: 20px;
-        margin:10px;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
-    }
-    .col ul {
-        list-style-type: none;
-        margin-left:-30px;
-    }
+.auction-bid-list {
+    margin-top: 2rem;
+}
 </style>

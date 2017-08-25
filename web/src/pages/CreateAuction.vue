@@ -68,7 +68,7 @@
 
                 <div class="col">
                     <b-form-group label="Start price">
-                        <b-input-group left="$">
+                        <b-input-group left="$" right="/ unit">
                             <b-form-input v-model="form.startPrice"
                                 type="number"
                                 step="0.01"></b-form-input>
@@ -106,11 +106,11 @@ export default {
             ingredients: [],
             form: {
                 ingredient: {},
-                week: '2017-W40',
+                week: '2017-W34',
                 startDate: moment().toISOString(),
                 duration: 3600,
                 qty: 1000,
-                threshold: "40,20",
+                threshold: "60,40",
                 startPrice: 5.00,
                 dc: 'TX'  // TODO: Don't hardcode
             },

@@ -38,12 +38,13 @@ export const setUserRole = (rolesArray) => {
 
 export const getUserRole = () => localStorage.getItem('user_role')
 
+export const setUserId = (id) => localStorage.setItem('user_id', id)
+
+export const getUserId = () => localStorage.getItem('user_id')
+
+// Set axios defaults if we have stuff in localStorage
 if (getAccessToken()) {
     setAccessToken(getAccessToken())
-}
-
-if (getUserRole() === 'buyer') {
-    setUserRole([ 'ROLE_SUPER_ADMIN' ])
 }
 
 // Add an interceptor to deal with forbidden requests

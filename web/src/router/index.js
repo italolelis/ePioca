@@ -36,7 +36,7 @@ const router = new Router({
             path: '/auctions/:id',
             name: 'View Auction',
             component: ViewAuction,
-            meta: { requiresAuth: true, supplierOnly: true }
+            meta: { requiresAuth: true }
         },
         // 404 catch all route
         {

@@ -45,7 +45,7 @@
 
 <script>
 import { login } from '@/api/auth'
-import { setAccessToken, setUserRole } from '@/api'
+import { setAccessToken, setUserRole, setUserId } from '@/api'
 
 export default {
     data() {
@@ -63,6 +63,7 @@ export default {
             login(username, password)
                 .then(({ data }) => {
                     setAccessToken(data.access_token)
+                    setUserId(data.user_data.id)
                     setUserRole(data.user_data.metadata.roles)
                     this.$router.push(redirectTo)
                 })
