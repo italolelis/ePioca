@@ -89,7 +89,7 @@ func initRouter() chi.Router {
 
 	r.Use(cors.Handler)
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(fmt.Sprintf("Welcome to ePioca v%s!!", version)))
+		handlers.JSON(w, http.StatusOK, fmt.Sprintf("Welcome to ePioca v%s!!", version))
 	})
 
 	return r
