@@ -1,4 +1,5 @@
 import client from '@/api'
+import { getUserName, getUserId } from '@/api'
 
 export const createAuction = (auction) =>
     client.post('/auctions', auction)
@@ -13,3 +14,13 @@ export const getBidsByAuction = (auctionId, lowest = false) => {
     }
     return client.get(url)
 }
+
+export const postBid = (auctionId, threshold, value) =>
+    client.post(`/auctions/${auctionId}/bids`, {
+        user: {
+            id: getUserId(),
+            name: getUserName()
+        },
+        threshold,
+        value,
+    })

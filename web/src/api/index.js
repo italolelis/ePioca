@@ -42,6 +42,10 @@ export const setUserId = (id) => localStorage.setItem('user_id', id)
 
 export const getUserId = () => localStorage.getItem('user_id')
 
+export const setUserName = (name) => localStorage.setItem('user_name', name)
+
+export const getUserName = () => localStorage.getItem('user_name')
+
 // Set axios defaults if we have stuff in localStorage
 if (getAccessToken()) {
     setAccessToken(getAccessToken())

@@ -11,7 +11,7 @@
                 <b-input-group-addon>/ unit</b-input-group-addon>
 
                 <b-input-group-button>
-                    <b-btn variant="success">Place Bid</b-btn>
+                    <b-btn type="submit" variant="success">Place Bid</b-btn>
                 </b-input-group-button>
             </b-input-group>
         </b-form-group>
@@ -19,6 +19,8 @@
 </template>
 
 <script>
+import { postBid } from '@/api/auction'
+
 export default {
     props: {
         qty: {
@@ -43,6 +45,14 @@ export default {
         thresholdQty() {
             return this.qty / 100 * this.threshold
         },
+    },
+
+    methods: {
+        placeBid() {
+            postBid(this.$route.params.id, this.threshold, this.form.bid)
+                .then(res => console.log(res))
+                .catch(err => console.error(err))
+        }
     }
 }
 </script>
