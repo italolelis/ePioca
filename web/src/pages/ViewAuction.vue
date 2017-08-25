@@ -47,6 +47,10 @@
 
             </div>
         </article>
+
+        <router-link class="btn btn-block" :to="{ name: 'Dashboard' }">
+            &larr; Back home
+        </router-link>
     </section>
 </template>
 
