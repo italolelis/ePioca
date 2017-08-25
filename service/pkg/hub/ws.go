@@ -1,5 +1,9 @@
 package hub
 
+import (
+	log "github.com/sirupsen/logrus"
+)
+
 type Message struct {
 	Type string      `json:"type"`
 	Data interface{} `json:"data"`
@@ -34,17 +38,22 @@ func (h *Hub) Run() {
 	for {
 		select {
 		case client := <-h.register:
+			log.Debug("Client registered")
 			h.clients[client] = true
 		case client := <-h.unregister:
+			log.Debug("Client unregistered")
 			if _, ok := h.clients[client]; ok {
 				delete(h.clients, client)
 				close(client.send)
 			}
 		case message := <-h.Broadcast:
+			log.Debug("Message to be broadcasted")
 			for client := range h.clients {
 				select {
 				case client.send <- message:
+					log.Debug("Sending message to the client")
 				default:
+					log.Debug("Removing client from the hub")
 					close(client.send)
 					delete(h.clients, client)
 				}

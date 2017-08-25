@@ -1,11 +1,11 @@
 package hub
 
 import (
-	"log"
 	"net/http"
 	"time"
 
 	"github.com/gorilla/websocket"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -60,18 +60,28 @@ func (c *Client) writePump() {
 	for {
 		select {
 		case message, ok := <-c.send:
+			log.Error("Message received!!!!!")
+
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
 				// The hub closed the channel.
 				c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+				log.Error("The hub closed the channel")
 				return
 			}
 
 			w, err := c.conn.NextWriter(websocket.TextMessage)
 			if err != nil {
+				log.WithError(err).Error("An error ocurred when trying to get next writer")
 				return
 			}
-			websocket.WriteJSON(c.conn, message)
+
+			log.Debug("Writing the message to the client")
+			err = websocket.WriteJSON(c.conn, message)
+			if err != nil {
+				log.WithError(err).Error("An error ocurred when sending the message to the client")
+				return
+			}
 
 			// Add queued chat messages to the current websocket message.
 			n := len(c.send)
@@ -80,9 +90,7 @@ func (c *Client) writePump() {
 				websocket.WriteJSON(c.conn, <-c.send)
 			}
 
-			if err := w.Close(); err != nil {
-				return
-			}
+			log.Error("Finished sending the message")
 		case <-ticker.C:
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if err := c.conn.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
