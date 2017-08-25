@@ -8,11 +8,11 @@ import (
 )
 
 const (
-	//Running status
+	//Running auction status
 	Running string = "running"
-	//Scheduled status
+	//Scheduled auction status
 	Scheduled string = "scheduled"
-	//Completed status
+	//Completed auction status
 	Completed string = "completed"
 )
 
@@ -29,6 +29,7 @@ type Repository interface {
 	Remove(id uuid.UUID) error
 }
 
+// Ingredient represents a HelloFresh ingredient
 type Ingredient struct {
 	Name string `json:"name" db:"name"`
 	SKU  string `json:"sku" db:"sku"`
@@ -49,19 +50,16 @@ type Auction struct {
 	PriceIncrement float32       `json:"price_increment" db:"price_increment"`
 }
 
-/*
-func (a *Auction) Scan(src interface{}) error {
-	fmt.Printf("\n%+v\n", src)
-	panic("")
-	return nil
+func (a *Auction) TimeRemaining() time.Duration {
+	return a.StartDate.Sub(time.Now()) + a.Duration*time.Second
 }
-*/
+
 // NewAuction creates a new instance of auction
 func NewAuction(id uuid.UUID) *Auction {
 	return &Auction{ID: id}
 }
 
-// IsScheduled verifies if an auction is scheduled
+// Status verifies if an auction is scheduled
 func (a *Auction) Status() string {
 	if time.Now().After(a.StartDate.Add(a.Duration * time.Second)) {
 		return Completed

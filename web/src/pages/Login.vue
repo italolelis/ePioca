@@ -1,16 +1,6 @@
 <template>
     <div class="container">
-        <p align="center">
-            <img src="https://cdn.hellofresh.com/de/cms/press/HelloFresh_Logo.png?v=2016" width="150">
-        </p>
-
         <form class="form-horizontal"  @submit.prevent="attemptLogin({ username, password })">
-            <div class="row">
-                <div class="col-md-6 mx-auto">
-                    <h2>ePioca Login</h2>
-                    <hr>
-                </div>
-            </div>
 
             <div class="row">
                 <div class="col-md-6 mx-auto">
@@ -55,7 +45,7 @@
 
 <script>
 import { login } from '@/api/auth'
-import { setAccessToken, setUserRole } from '@/api'
+import { setAccessToken, setUserRole, setUserId } from '@/api'
 
 export default {
     data() {
@@ -73,6 +63,7 @@ export default {
             login(username, password)
                 .then(({ data }) => {
                     setAccessToken(data.access_token)
+                    setUserId(data.user_data.id)
                     setUserRole(data.user_data.metadata.roles)
                     this.$router.push(redirectTo)
                 })

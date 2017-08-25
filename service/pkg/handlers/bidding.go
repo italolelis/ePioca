@@ -35,7 +35,16 @@ func (h *Bidding) ShowByAuction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bids, err := h.repo.FindByAuction(id)
+	threshold := r.URL.Query().Get("threshold")
+
+	var bids bid.Bids
+
+	if threshold == "" {
+		bids, err = h.repo.FindByAuction(id)
+	} else {
+		bids, err = h.repo.FindByAuctionAndQuery(id, map[string]interface{}{"threshold": threshold})
+	}
+
 	if err != nil {
 		JSON(w, http.StatusInternalServerError, "Failed during searching latest bids")
 		return
@@ -113,6 +122,34 @@ func (h *Bidding) Create(w http.ResponseWriter, r *http.Request) {
 		log.WithError(err).Error("Failed to create a bid")
 		JSON(w, http.StatusInternalServerError, "Failed to create a bid")
 		return
+	}
+	lowestBids, err := h.repo.FindLowest(auction.ID)
+	if err != nil {
+		log.WithError(err).Error("Failed get lowest bids")
+		JSON(w, http.StatusInternalServerError, "Failed to get lowest bids")
+		return
+
+	}
+	log.Infof("%+v", lowestBids)
+	foundLowest := false
+	for _, b := range lowestBids {
+		log.Infof("Lowest bid: T: %v V: %v New bid: T: %v, V:%v", b.Threshold, b.Value, bid.Threshold, bid.Value)
+		if b.Threshold == bid.Threshold && b.Value < bid.Value {
+			log.Info("FOUND")
+			foundLowest = true
+		}
+	}
+
+	if !foundLowest && !auction.IsCompleted() && auction.TimeRemaining() < time.Minute*5 {
+		toAdd := time.Minute*5 - auction.TimeRemaining()
+		// FML
+		auction.Duration = time.Duration((auction.Duration*time.Second + toAdd).Seconds())
+
+		if err := h.auctionRepo.Add(auction); err != nil {
+			log.WithError(err).Error("Failed to create an auction")
+			JSON(w, http.StatusInternalServerError, "Failed to create an auction")
+			return
+		}
 	}
 
 	w.Header().Set("Location", fmt.Sprintf("/auctions/%s/bids", auctionID))

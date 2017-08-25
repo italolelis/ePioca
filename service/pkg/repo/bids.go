@@ -1,6 +1,8 @@
 package repo
 
 import (
+	"fmt"
+
 	"github.com/italolelis/epioca/service/pkg/domain/bid"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
@@ -31,8 +33,35 @@ func (r *BidRepo) FindByAuction(auctionID uuid.UUID) ([]*bid.Bid, error) {
         WHERE
             auction_id = $1
     `
-
 	err := r.db.Select(&bids, query, auctionID)
+
+	return bids, err
+}
+
+// FindByAuctionAndQuery find all bids for an auction and criteria
+func (r *BidRepo) FindByAuctionAndQuery(auctionID uuid.UUID, criteria map[string]interface{}) ([]*bid.Bid, error) {
+	var bids []*bid.Bid
+
+	query := `
+			SELECT
+				*
+			FROM
+				bids
+			WHERE
+				auction_id = $1
+		`
+
+	count := 2
+	values := []interface{}{
+		auctionID,
+	}
+	for n, q := range criteria {
+		query += fmt.Sprintf(" AND %s = $%d", n, count)
+		values = append(values, q)
+		count++
+	}
+
+	err := r.db.Select(&bids, query, values...)
 
 	return bids, err
 }
@@ -80,27 +109,23 @@ func (r *BidRepo) FindLatestByAuctionUser(auctionID uuid.UUID, userID uuid.UUID)
 }
 
 // FindLowest func
-func (r *BidRepo) FindLowest(auctionID uuid.UUID) (*bid.Bid, error) {
-	var bid bid.Bid
+func (r *BidRepo) FindLowest(auctionID uuid.UUID) ([]*bid.Bid, error) {
+	var bids []*bid.Bid
 
 	query := `
-		SELECT 
-			b.* 
-		FROM bids b
-		WHERE 
-			b.auction_id = $1
-		ORDER BY 
-			b.value ASC
-		LIMIT 1
+		SELECT a.*
+		FROM bids a 
+		JOIN (
+			SELECT threshold, MIN(value) AS min_value
+			FROM bids
+			GROUP BY threshold
+		) AS b ON a.threshold = b.threshold AND a.value = b.min_value
+		WHERE a.auction_id = $1
     `
 
-	err := r.db.Get(&bid, query, auctionID)
+	err := r.db.Select(&bids, query, auctionID)
 
-	if err != nil {
-		return &bid, errors.Wrap(err, "Get lowest auction bid")
-	}
-
-	return &bid, nil
+	return bids, err
 }
 
 // Add func

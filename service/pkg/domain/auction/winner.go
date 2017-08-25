@@ -12,33 +12,23 @@ var (
 	ErrInvalidPercentage = errors.New("invalid percentage given")
 )
 
-func FindWinningBids(bids bid.Bids, totalPercentage int) ([]*bid.Bid, error) {
+// FindWinningBids finds the winning bids for an auction
+func FindWinningBids(bids bid.Bids, totalPercentage int) (bid.Bids, error) {
 	var divisible int
 
-	thresholds := make(map[int]int)
-	for _, b := range bids {
-		minValue, ok := thresholds[b.Threshold]
-		if !ok {
-			thresholds[b.Threshold] = int(b.Value)
-			continue
-		}
-
-		if int(b.Value) < minValue {
-			thresholds[b.Threshold] = int(b.Value)
-		}
-	}
+	thresholds := flatThresholds(bids)
+	sort.Sort(bids)
 
 	if len(thresholds) == 1 {
-		var t int
-		for k := range thresholds {
-			t = k
+		var n int
+		for t := range thresholds {
+			n = t
 		}
-		divisible = totalPercentage / t
+		divisible = totalPercentage / n
 	}
 
-	var winners []*bid.Bid
+	var winners bid.Bids
 	if divisible != 0 {
-		sort.Sort(bids)
 		for i, b := range bids {
 			if i >= divisible {
 				break
@@ -48,7 +38,7 @@ func FindWinningBids(bids bid.Bids, totalPercentage int) ([]*bid.Bid, error) {
 	} else {
 		for t, v := range thresholds {
 			for _, b := range bids {
-				if b.Threshold == t && int(b.Value) == v {
+				if b.Threshold == t && b.Value == v {
 					winners = append(winners, b)
 				}
 			}
@@ -56,4 +46,21 @@ func FindWinningBids(bids bid.Bids, totalPercentage int) ([]*bid.Bid, error) {
 	}
 
 	return winners, nil
+}
+
+func flatThresholds(bids bid.Bids) map[int]float32 {
+	thresholds := make(map[int]float32)
+	for _, b := range bids {
+		minValue, ok := thresholds[b.Threshold]
+		if !ok {
+			thresholds[b.Threshold] = b.Value
+			continue
+		}
+
+		if b.Value < minValue {
+			thresholds[b.Threshold] = b.Value
+		}
+	}
+
+	return thresholds
 }
