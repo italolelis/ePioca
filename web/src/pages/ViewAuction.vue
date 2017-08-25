@@ -74,7 +74,12 @@ export default {
     data() {
         return {
             auction: {
-                ingredient: {}
+                ingredient: {
+                    name: '',
+                    sku: ''
+                },
+                week: '',
+                qty: 0
             },
             lowestBids: []
         }
