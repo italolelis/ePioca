@@ -60,6 +60,7 @@ client.interceptors.response.use(response => response, error => {
         }
 
         console.error(error.response.data)
+        throw error.response
     }
 
     if (error.request) {

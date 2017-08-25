@@ -2,11 +2,13 @@
     <section>
         <div class="row">
             <div class="col">
-                <h2>{{ auction.ingredient.name }}</h2>
-                <b-badge>{{ auction.status }}</b-badge>
+                <h2>
+                    {{ auction.ingredient.name }}
+                    <b-badge>{{ auction.status }}</b-badge>
+                </h2>
 
                 <p class="lead">
-                    Auction to deliver {{ auction.qty }} units of {{ auction.ingredient.sku }} in {{ auction.week }}
+                    Auction to supply {{ auction.qty }} units of {{ auction.ingredient.sku }} in {{ auction.week }}
                 </p>
             </div>
         </div>
@@ -93,7 +95,7 @@
 
         computed: {
             isBuyer() {
-                return getUserRole() == 'supplier'
+                return getUserRole() !== 'supplier'
             },
 
             scheduledDate() {
