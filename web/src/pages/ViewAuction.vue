@@ -50,8 +50,8 @@
             </div>
 
             <div class="col">
-                <div v-if="auction.status === 'running'">
-                    Time remaining...
+                <div>
+                    <count-down :date="endDate"></count-down>
                 </div>
 
                 <div v-if="auction.status === 'scheduled'">
@@ -70,16 +70,19 @@
 <script>
     import axios from 'axios';
     import config from '@/config'
+    import moment from 'moment'
     import { getUserRole } from '@/api'
     import { getAuctionById, getBidsByAuction } from '@/api/auction'
     import AuctionBidList from '@/components/AuctionBidList'
     import BidForm from '@/components/BidForm'
+    import CountDown from '@/components/CountDown'
     import LowBid from '@/components/LowBid'
 
     export default {
         components: {
             AuctionBidList,
             BidForm,
+            CountDown,
             LowBid,
         },
 
@@ -95,6 +98,10 @@
         computed: {
             isBuyer() {
                 return getUserRole() == 'supplier'
+            },
+
+            endDate() {
+                return moment(this.auction.startDate).add(this.auction.duration, 's').format()
             },
 
             auctionId() {
