@@ -12,7 +12,6 @@
     export default {
         props: {
             endDate : {
-                type : String,
                 required: true
             }
         },
@@ -31,8 +30,9 @@
         methods: {
             getCountDown() {
                 this.timeInterval = setInterval(function(){
+                    let difference    = moment(this.endDate).diff(moment(), 'seconds');
                     let timeRemaining = moment().countdown(this.endDate).toString();
-                    if ('' === timeRemaining) {
+                    if ('' === timeRemaining || difference < 0) {
                         this.timeRemaining = 'Finished';
                         clearInterval(this.timeInterval);
                         return;
