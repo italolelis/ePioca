@@ -1,5 +1,3 @@
-console.log(process.env)
-
 export default {
     gateway: {
         uri: process.env.GW_URL,
