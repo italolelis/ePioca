@@ -23,7 +23,7 @@ ws.onmessage = ({ data }) => {
     }
 }
 
-ws.registerFor = (message, callback) => {
+export const registerFor = (message, callback) => {
     if (!messageRegister[message]) {
         messageRegister[message] = []
     }

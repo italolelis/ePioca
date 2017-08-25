@@ -20,7 +20,7 @@
 
 <script>
 import { getLowestBidsByAuction } from '@/api/auction'
-import ws from '@/api/ws'
+import { registerFor } from '@/api/ws'
 import LowBid from '@/components/LowBid'
 
 export default {
@@ -43,7 +43,7 @@ export default {
 
     created() {
         this.loadLowestBids()
-        ws.registerFor('bid_created', this.loadLowestBids)
+        registerFor('bid_created', this.loadLowestBids)
     },
 
     methods: {

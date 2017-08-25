@@ -13,7 +13,7 @@
 
 <script>
 import { getBidsByAuctionAndThreshold } from '@/api/auction'
-import ws from '@/api/ws'
+import { registerFor } from '@/api/ws'
 import AuctionBid from '@/components/AuctionBid'
 
 export default {
@@ -40,7 +40,7 @@ export default {
 
     created() {
         this.loadBids()
-        ws.registerFor('bid_created', this.loadBids)
+        registerFor('bid_created', this.loadBids)
     },
 
     methods: {

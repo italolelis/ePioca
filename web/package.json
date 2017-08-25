@@ -19,7 +19,9 @@
     "moment-countdown": "^ 0.0.3",
     "vue": "^2.3.3",
     "vue-flatpickr-component": "^3.0.0",
+    "vue-masked-input": "^0.5.2",
     "vue-router": "^2.6.0",
+    "vue-the-mask": "^0.11.0-alpha.2",
     "ws": "^3.1.0"
   },
   "devDependencies": {

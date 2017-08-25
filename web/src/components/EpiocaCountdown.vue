@@ -51,11 +51,11 @@
             },
 
             getTimeInterval() {
-                return setInterval(function(){
+                return setInterval(() => {
                     this.timeIsUp() || this.timeHasPassed()
                         ? this.clearCurrentInterval()
                         : this.setTimeRemaining(`${this.getTimeRemaining()} remaining`);
-                }.bind(this), this.interval);
+                }, this.interval);
             },
 
             setTimeRemaining(value) {
