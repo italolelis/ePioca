@@ -39,7 +39,25 @@ export default {
 
     created() {
         getBidsByAuction(this.auctionId, false)
-            .then(res => this.bids = res.data)
+            .then(res => {
+                this.bids = res.data.sort((a, b) => {
+                    if (a.value < b.value) {
+                        return -1
+                    }
+
+                    if (a.value > b.value) {
+                        return 1
+                    }
+
+                    return 0
+                })
+            })
     }
 }
 </script>
+
+<style scoped>
+.list-group-item:first-child {
+    background-color: rgba(134, 184, 23, 0.4);
+}
+</style>
