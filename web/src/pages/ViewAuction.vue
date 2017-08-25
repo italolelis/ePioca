@@ -1,16 +1,13 @@
 <template>
     <section>
         <div class="row">
-            <div class="col">
-                <h2>
-                    {{ auction.ingredient.name }}
-                    <b-badge>{{ auction.status }}</b-badge>
-                </h2>
-
-                <p class="lead">
-                    Auction to supply {{ auction.qty }} units of {{ auction.ingredient.sku }} in {{ auction.week }}
-                </p>
-            </div>
+            <auction-header class="col"
+                :ingredient="auction.ingredient.name"
+                :sku="auction.ingredient.sku"
+                status="Completed"
+                :week="auction.week"
+                :qty="auction.qty"
+            ></auction-header>
 
             <div class="col-md-4">
                 <b-card v-if="auction.status === 'scheduled'" class="text-center">
@@ -29,7 +26,7 @@
 
             <div class="row">
 
-                <div class="col" v-if="!isBuyer">
+                <div class="col" v-if="!isBuyer" v-show="auction.status === 'running'">
                     <bid-form
                         v-for="threshold in auction.threshold"
                         :key="threshold"
@@ -44,7 +41,6 @@
                     :key="threshold"
                     :threshold="threshold"
                     :auction-id="auctionId"></auction-bid-list>
-
             </div>
         </article>
 
@@ -59,15 +55,17 @@ import config from '@/config'
 import moment from 'moment'
 import { getUserRole } from '@/api'
 import { getAuctionById } from '@/api/auction'
+import { registerFor } from '@/api/ws'
 import AuctionBidList from '@/components/AuctionBidList'
+import AuctionHeader from '@/components/AuctionHeader'
 import BidForm from '@/components/BidForm'
 import EpiocaCountdown from '@/components/EpiocaCountdown'
 import LowBidList from '@/components/LowBidList'
-import { registerFor } from '@/api/ws'
 
 export default {
     components: {
         AuctionBidList,
+        AuctionHeader,
         BidForm,
         EpiocaCountdown,
         LowBidList,
@@ -110,7 +108,13 @@ export default {
         registerFor('auction_time_changed', this.timeChanged)
 
         getAuctionById(this.auctionId)
-            .then(res => this.auction = res.data)
+            .then(({ data }) => {
+                if (data.status === 'completed') {
+                    this.$router.push({ name: 'Winners', params: { id: this.auctionId }})
+                }
+
+                this.auction = data
+            })
             .catch(err => console.error(err))
     },
 

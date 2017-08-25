@@ -1,78 +1,109 @@
 <template>
-    <div>
-        <div>
-            <h4> Ingredient of this auction: {{ auction.ingredient.name }} </h4>
+    <section>
+        <div class="row">
+            <auction-header class="col"
+                :ingredient="auction.ingredient.name"
+                :sku="auction.ingredient.sku"
+                status="Completed"
+                :week="auction.week"
+                :qty="auction.qty"
+            ></auction-header>
         </div>
-        <div v-if="'buyer' === userRole">
-            <h2>Suppliers for this Auction</h2>
-            <h3> {{ auctionDate }} </h3>
-            <b-list-group>
-                <auction-winners
-                    v-for="bid in bidings"
-                    :key="bid.id"
-                    :threshold="bid.threshold"
-                    :user="bid.user.name"
-                    :value="bid.value"></auction-winners>
-            </b-list-group>
-        </div>
-        <div v-if="'supplier' === userRole">
-            <h3> {{ auctionDate }} </h3>
-            <div v-for="bid in userBids">
-                {{ bid.message }}
+
+        <article v-if="isSupplier">
+            <div class="row">
+                <low-bid-list class="col" :auction-id="auctionId"></low-bid-list>
             </div>
-        </div>
-    </div>
+
+            <div class="row">
+                <auction-bid-list
+                    class="auction-bid-list col"
+                    v-for="threshold in auction.threshold"
+                    :key="threshold"
+                    :threshold="threshold"
+                    :auction-id="auctionId"
+                    :user-id="userId"></auction-bid-list>
+            </div>
+        </article>
+
+        <article v-else>
+            <div class="row">
+                <winning-bid-list
+                    class="auction-bid-list col"
+                    v-for="threshold in auction.threshold"
+                    :key="threshold"
+                    :threshold="threshold"
+                    :auction-id="auctionId"></winning-bid-list>
+            </div>
+        </article>
+
+        <router-link class="btn btn-block" :to="{ name: 'Dashboard' }">
+            &larr; Back home
+        </router-link>
+    </section>
 </template>
 
 <script>
-    import moment from 'moment'
-    import { getUserId } from '@/api/'
-    import { getUserName } from '@/api/'
-    import { getUserRole } from '@/api/'
-    import { getAuctionById } from '@/api/auction'
-    import { getWinners } from '@/api/auction'
-    import AuctionWinners from '@/components/AuctionWinners'
+import moment from 'moment'
+import { getUserId, getUserName, getUserRole } from '@/api/'
+import { getAuctionById, getLowestBidsByAuction, getWinners } from '@/api/auction'
+import AuctionBidList from '@/components/AuctionBidList'
+import AuctionHeader from '@/components/AuctionHeader'
+import LowBidList from '@/components/LowBidList'
+import WinningBidList from '@/components/WinningBidList'
 
-    export default {
-        data() {
-            return {
-                bidings: [],
-                auction: {},
-                userBids: [],
-                userRole: getUserRole(),
-                userName: getUserName(),
-                userId: getUserId(),
-                auctionDate: ''
-            }
+export default {
+    data() {
+        return {
+            bids: [],
+            auction: {
+                ingredient: {
+                    name: '',
+                    sku: ''
+                },
+                week: '',
+                qty: 0,
+                threshold: []
+            },
+            myBids: []
+        }
+    },
+
+    components : {
+        AuctionBidList,
+        AuctionHeader,
+        WinningBidList,
+        LowBidList,
+    },
+
+    computed: {
+        isSupplier() {
+            return getUserRole() === 'supplier'
         },
 
-        components : {
-            AuctionWinners
+        auctionId() {
+            return this.$route.params.id
         },
 
-        created() {
-            getWinners(this.$route.params.id).then( res => {
-                this.bidings  = res.data;
-                this.userBids = res.data.map( (value) => {
-                    console.log(value);
-                    if (value.user.id === this.userId) {
-                        return {
-                            'message' : `You won this threshold ${value.threshold} %, your bid was: ${value.value.toFixed(2)} $`,
-                        }
-                    }
-                    return {
-                        'message' : `You did not win this threshold ${value.threshold} %, the lowest bid was ${value.value.toFixed(2)} $`,
-                    }
-                });
-            });
-            getAuctionById(this.$route.params.id).then( res => {
-                this.auction = res.data;
-                this.auctionDate = moment(this.auction.start_date).format('LLL');
-            });
+        userId() {
+            return getUserId()
+        }
+    },
 
+    created() {
+        getAuctionById(this.auctionId)
+            .then(({ data }) => this.auction = data)
 
+        if (!this.isSupplier) {
+            getWinners(this.auctionId)
+                .then(({ data }) => this.bids = data)
         }
     }
+}
 </script>
 
-<style scoped></style>
+<style scoped>
+.auction-bid-list {
+    margin-top: 2rem;
+}
+</style>

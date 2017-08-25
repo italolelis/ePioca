@@ -1,6 +1,6 @@
 <template>
     <section>
-        <h4>Bids for {{ threshold }}% yield</h4>
+        <h4>Winning bids for {{ threshold }}% yield</h4>
         <b-list-group>
             <auction-bid
                 v-for="bid in bids"
@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { getBidsByAuctionAndThreshold } from '@/api/auction'
+import { getWinners } from '@/api/auction'
 import { registerFor } from '@/api/ws'
 import AuctionBid from '@/components/AuctionBid'
 
@@ -26,9 +26,6 @@ export default {
             type: String,
             required: true
         },
-        userId: {
-            type: String
-        }
     },
 
     components: {
@@ -48,10 +45,10 @@ export default {
 
     methods: {
         loadBids() {
-            getBidsByAuctionAndThreshold(this.auctionId, this.threshold)
+            getWinners(this.auctionId)
                 .then(({ data }) => {
-                    if (this.userId) {
-                        data = data.filter(bid => bid.user.id === this.userId)
+                    if (this.threshold) {
+                        data = data.filter(bid => bid.threshold === this.threshold)
                     }
 
                     this.bids = data.sort((a, b) => {

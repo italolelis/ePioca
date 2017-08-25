@@ -15,6 +15,7 @@ export const getLowestBidsByAuction = (auctionId) =>
 
 export const getBidsByAuctionAndThreshold = (auctionId, threshold) =>
     client.get(`/auctions/${auctionId}/bids`, { params: { threshold } })
+
 export const getBidsByAuction = (auctionId, lowest = false) => {
     let url = `/auctions/${auctionId}/bids`;
     if (lowest) {
