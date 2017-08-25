@@ -1,6 +1,6 @@
 <template>
     <section>
-        <div class="row">
+        <div class="row" v-if="lowestBids">
             <div class="col">
                 <h3>Lowest bids</h3>
             </div>

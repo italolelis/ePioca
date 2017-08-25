@@ -25,14 +25,14 @@
             <low-bid-list :auction-id="auctionId"></low-bid-list>
 
             <div class="row">
-
-                <div class="col" v-if="!isBuyer" v-show="auction.status === 'running'">
-                    <bid-form
-                        v-for="threshold in auction.threshold"
-                        :key="threshold"
-                        :threshold="threshold"
-                        :qty="auction.qty"></bid-form>
-                </div>
+                <bid-form
+                    class="col"
+                    v-if="!isBuyer"
+                    v-show="auction.status === 'running'"
+                    v-for="threshold in auction.threshold"
+                    :key="threshold"
+                    :threshold="threshold"
+                    :qty="auction.qty"></bid-form>
 
                 <auction-bid-list
                     v-if="isBuyer"
@@ -81,7 +81,6 @@ export default {
                 week: '',
                 qty: 0
             },
-            lowestBids: []
         }
     },
 

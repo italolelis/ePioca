@@ -1,9 +1,9 @@
 <template>
     <b-form @submit.prevent="placeBid">
-        <h5>
+        <h6>
             Bidding for contract to supply {{ thresholdQty }} units
             <small>({{ threshold }}% yield)</small>
-        </h5>
+        </h6>
 
         <!-- TODO: Extract into alerts component -->
         <div class="row">
@@ -109,3 +109,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+form {
+    margin-top: 2rem;
+}
+</style>
