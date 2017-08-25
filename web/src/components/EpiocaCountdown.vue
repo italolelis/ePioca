@@ -18,8 +18,9 @@
 
         data() {
             return {
+                interval: 1000,
                 timeRemaining : '',
-                timeInterval: ''
+                timeInterval: '',
             }
         },
 
