@@ -17,8 +17,11 @@ import (
 )
 
 const (
-	TimeChanged string = "time_changed"
-	NewBid      string = "new_bid"
+	// AuctionTimeChanged event
+	AuctionTimeChanged string = "auction_time_changed"
+
+	// BidCreated event
+	BidCreated string = "bid_created"
 )
 
 // Bidding holds all handlers for an bid
@@ -161,10 +164,10 @@ func (h *Bidding) Create(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		h.wsHub.Broadcast <- hub.Message{Type: TimeChanged, Data: auction}
+		h.wsHub.Broadcast <- hub.Message{Type: AuctionTimeChanged, Data: auction}
 	}
 
-	h.wsHub.Broadcast <- hub.Message{Type: NewBid, Data: bid}
+	h.wsHub.Broadcast <- hub.Message{Type: BidCreated, Data: bid}
 	w.Header().Set("Location", fmt.Sprintf("/auctions/%s/bids", auctionID))
 	w.WriteHeader(http.StatusCreated)
 }

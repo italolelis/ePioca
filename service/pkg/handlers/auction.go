@@ -7,19 +7,30 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/italolelis/epioca/service/pkg/domain/auction"
+	"github.com/italolelis/epioca/service/pkg/hub"
 	"github.com/italolelis/epioca/service/pkg/repo"
 	uuid "github.com/satori/go.uuid"
 	log "github.com/sirupsen/logrus"
 )
 
+const (
+	// AuctionCreated event
+	AuctionCreated string = "auction_created"
+	// AuctionChanged event
+	AuctionChanged string = "auction_changed"
+	// AuctionRemoved event
+	AuctionRemoved string = "auction_removed"
+)
+
 // Auction holds all handlers for an auction
 type Auction struct {
-	repo auction.Repository
+	repo  auction.Repository
+	wsHub *hub.Hub
 }
 
 // NewAuction creates a new instance of Auction
-func NewAuction(repo auction.Repository) *Auction {
-	return &Auction{repo}
+func NewAuction(repo auction.Repository, wsHub *hub.Hub) *Auction {
+	return &Auction{repo, wsHub}
 }
 
 // Index handler to list auctions
@@ -89,6 +100,7 @@ func (h *Auction) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	h.wsHub.Broadcast <- hub.Message{Type: AuctionCreated, Data: act}
 	w.Header().Set("Location", fmt.Sprintf("/auctions/%s", act.ID))
 	w.WriteHeader(http.StatusCreated)
 }
@@ -126,6 +138,7 @@ func (h *Auction) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	h.wsHub.Broadcast <- hub.Message{Type: AuctionChanged, Data: auction}
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -144,5 +157,6 @@ func (h *Auction) Remove(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	h.wsHub.Broadcast <- hub.Message{Type: AuctionRemoved, Data: id}
 	w.WriteHeader(http.StatusNoContent)
 }

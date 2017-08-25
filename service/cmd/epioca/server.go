@@ -103,7 +103,7 @@ func initAuctionRoutes(r chi.Router, db *sqlx.DB) {
 		hub.ServeWs(wsHub, w, r)
 	})
 
-	handler := handlers.NewAuction(repo.NewAuction(db))
+	handler := handlers.NewAuction(repo.NewAuction(db), wsHub)
 	bidHandler := handlers.NewBidding(repo.NewBidRepo(db), repo.NewAuction(db), wsHub)
 
 	r.Route("/auctions", func(r chi.Router) {
