@@ -49,6 +49,10 @@ type Auction struct {
 	PriceIncrement float32       `json:"price_increment" db:"price_increment"`
 }
 
+func (a *Auction) TimeRemaining() time.Duration {
+	return a.StartDate.Sub(time.Now()) + a.Duration*time.Second
+}
+
 /*
 func (a *Auction) Scan(src interface{}) error {
 	fmt.Printf("\n%+v\n", src)
