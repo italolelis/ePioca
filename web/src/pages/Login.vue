@@ -45,7 +45,7 @@
 
 <script>
 import { login } from '@/api/auth'
-import { setAccessToken, setUserRole, setUserId } from '@/api'
+import { setAccessToken, setUserRole, setUserId, setUserName } from '@/api'
 
 export default {
     data() {
@@ -68,7 +68,7 @@ export default {
                     setUserRole(data.user_data.metadata.roles)
                     this.$router.push(redirectTo)
                 })
-                .catch(() => this.showLoginError = true)
+                // .catch(() => this.showLoginError = true)
         }
     }
 }
