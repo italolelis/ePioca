@@ -1,5 +1,6 @@
-# ePioca
-
+<p align="center">  
+  <img height="150" src="./epioca.png"  alt="ePioca" title="ePioca">
+</p>
 
 ## Key Features
 
@@ -7,7 +8,9 @@ Features...
 
 ## Installation
 
-Instructions...
+```sh
+docker-compose up -d
+```
 
 ## Getting Started
 
