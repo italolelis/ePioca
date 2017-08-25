@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <form class="form-horizontal"  @submit.prevent="attemptLogin({ username, password })">
+        <form class="form-horizontal"  @submit.prevent="attemptLogin({ username, password, country })">
 
             <div class="row">
                 <div class="col-md-6 mx-auto">
@@ -36,9 +36,25 @@
             <div class="row">
                 <div class="col-md-3"></div>
                 <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <div class="input-group-addon"><i class="fa fa-key"></i></div>
+                            <select class="form-control" v-model="country" required>
+                                <option value="us" selected>US</option>
+                                <option value="de">DE</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
                     <button type="submit" class="btn btn-success btn-block"><i class="fa fa-sign-in"></i> Login</button>
                 </div>
             </div>
+
         </form>
     </div>
 </template>
@@ -52,15 +68,16 @@ export default {
         return {
             username: '',
             password: '',
-            showLoginError: false
+            showLoginError: false,
+            country : 'us'
         }
     },
 
     methods: {
-        attemptLogin({ username, password }) {
+        attemptLogin({ username, password, country }) {
             const redirectTo = this.$route.query.redirect ? this.$route.query.redirect : '/';
 
-            login(username, password)
+            login(username, password, country)
                 .then(({ data }) => {
                     setAccessToken(data.access_token)
                     setUserId(data.user_data.id)
