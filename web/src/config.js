@@ -1,14 +1,12 @@
-export default {
+console.log(process.env)
 
-    api: {
-        uri: 'http://127.0.0.1:8115'
-    },
+export default {
     gateway: {
-        uri: 'https://gw-staging.hellofresh.com'
+        uri: process.env.GW_URL,
     },
 
     service: {
-        uri: 'http://localhost:8115',
-        ws:  'ws://localhost:8115/ws',
+        uri: process.env.SERVICE_URI,
+        ws:  process.env.WS_URI,
     }
 }
