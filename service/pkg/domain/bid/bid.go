@@ -9,12 +9,14 @@ import (
 // Repository defines the basic methods for a repository
 type Repository interface {
 	FindByAuction(auctionID uuid.UUID) ([]*Bid, error)
+	FindByAuctionAndQuery(auctionID uuid.UUID, criteria map[string]interface{}) ([]*Bid, error)
 	FindByUser(userID uuid.UUID) ([]*Bid, error)
 	FindLowest(auctionID uuid.UUID) ([]*Bid, error)
 	FindLatestByAuctionUser(auctionID uuid.UUID, userID uuid.UUID) (*Bid, error)
 	Add(bid *Bid) error
 }
 
+// User represents an user that will make a bid in an auction
 type User struct {
 	ID   uuid.UUID `json:"id" db:"id"`
 	Name string    `json:"name" db:"name"`
@@ -35,6 +37,7 @@ func NewBid(id uuid.UUID) *Bid {
 	return &Bid{ID: id}
 }
 
+// Bids represents a collection of Bids
 type Bids []*Bid
 
 func (slice Bids) Len() int {

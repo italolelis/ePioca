@@ -1,6 +1,8 @@
 package repo
 
 import (
+	"fmt"
+
 	"github.com/italolelis/epioca/service/pkg/domain/bid"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
@@ -31,8 +33,35 @@ func (r *BidRepo) FindByAuction(auctionID uuid.UUID) ([]*bid.Bid, error) {
         WHERE
             auction_id = $1
     `
-
 	err := r.db.Select(&bids, query, auctionID)
+
+	return bids, err
+}
+
+// FindByAuctionAndQuery find all bids for an auction and criteria
+func (r *BidRepo) FindByAuctionAndQuery(auctionID uuid.UUID, criteria map[string]interface{}) ([]*bid.Bid, error) {
+	var bids []*bid.Bid
+
+	query := `
+			SELECT
+				*
+			FROM
+				bids
+			WHERE
+				auction_id = $1
+		`
+
+	count := 2
+	values := []interface{}{
+		auctionID,
+	}
+	for n, q := range criteria {
+		query += fmt.Sprintf(" AND %s = $%d", n, count)
+		values = append(values, q)
+		count++
+	}
+
+	err := r.db.Select(&bids, query, values...)
 
 	return bids, err
 }
