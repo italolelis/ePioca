@@ -10,7 +10,7 @@ import (
 type Repository interface {
 	FindByAuction(auctionID uuid.UUID) ([]*Bid, error)
 	FindByUser(userID uuid.UUID) ([]*Bid, error)
-	FindLowest(auctionID uuid.UUID) (*Bid, error)
+	FindLowest(auctionID uuid.UUID) ([]*Bid, error)
 	FindLatestByAuctionUser(auctionID uuid.UUID, userID uuid.UUID) (*Bid, error)
 	Add(bid *Bid) error
 }

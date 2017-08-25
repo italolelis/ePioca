@@ -80,27 +80,23 @@ func (r *BidRepo) FindLatestByAuctionUser(auctionID uuid.UUID, userID uuid.UUID)
 }
 
 // FindLowest func
-func (r *BidRepo) FindLowest(auctionID uuid.UUID) (*bid.Bid, error) {
-	var bid bid.Bid
+func (r *BidRepo) FindLowest(auctionID uuid.UUID) ([]*bid.Bid, error) {
+	var bids []*bid.Bid
 
 	query := `
-		SELECT 
-			b.* 
-		FROM bids b
-		WHERE 
-			b.auction_id = $1
-		ORDER BY 
-			b.value ASC
-		LIMIT 1
+		SELECT a.*
+		FROM bids a 
+		JOIN (
+			SELECT threshold, MIN(value) AS min_value
+			FROM bids
+			GROUP BY threshold
+		) AS b ON a.threshold = b.threshold AND a.value = b.min_value
+		WHERE a.auction_id = $1
     `
 
-	err := r.db.Get(&bid, query, auctionID)
+	err := r.db.Select(&bids, query, auctionID)
 
-	if err != nil {
-		return &bid, errors.Wrap(err, "Get lowest auction bid")
-	}
-
-	return &bid, nil
+	return bids, err
 }
 
 // Add func
