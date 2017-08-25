@@ -47,6 +47,10 @@
 
             </div>
         </article>
+
+        <router-link class="btn btn-block" :to="{ name: 'Dashboard' }">
+            &larr; Back home
+        </router-link>
     </section>
 </template>
 
@@ -74,7 +78,7 @@ export default {
             auction: {
                 ingredient: {}
             },
-            lowestBids: [],
+            lowestBids: []
         }
     },
 
@@ -88,8 +92,7 @@ export default {
         },
 
         endDate() {
-            this.getEndDate();
-            registerFor('auction_time_changed', this.getEndDate())
+            return moment(this.auction.start_date).add(this.auction.duration, 's').format()
         },
 
         auctionId() {
@@ -98,12 +101,14 @@ export default {
     },
 
     methods: {
-        getEndDate() {
-            return moment(this.auction.start_date).add(this.auction.duration, 's').format()
+        timeChanged({ data }) {
+            this.auction.duration = data.duration
         }
     },
 
     created() {
+        registerFor('auction_time_changed', this.timeChanged)
+
         getAuctionById(this.auctionId)
             .then(res => this.auction = res.data)
             .catch(err => console.error(err))
