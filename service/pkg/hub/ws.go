@@ -1,6 +1,9 @@
 package hub
 
-type Message interface{}
+type Message struct {
+	Type string      `json:"type"`
+	Data interface{} `json:"data"`
+}
 
 // Hub maintains the set of active clients and broadcasts messages to the
 // clients.

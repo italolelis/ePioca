@@ -16,6 +16,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+const (
+	TimeChanged string = "time_changed"
+	NewBid      string = "new_bid"
+)
+
 // Bidding holds all handlers for an bid
 type Bidding struct {
 	repo        bid.Repository
@@ -150,9 +155,11 @@ func (h *Bidding) Create(w http.ResponseWriter, r *http.Request) {
 			JSON(w, http.StatusInternalServerError, "Failed to create an auction")
 			return
 		}
+
+		h.wsHub.Broadcast <- hub.Message{Type: TimeChanged, Data: auction}
 	}
 
-	h.wsHub.Broadcast <- hub.Message(bid)
+	h.wsHub.Broadcast <- hub.Message{Type: NewBid, Data: bid}
 	w.Header().Set("Location", fmt.Sprintf("/auctions/%s/bids", auctionID))
 	w.WriteHeader(http.StatusCreated)
 }
