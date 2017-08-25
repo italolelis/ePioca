@@ -118,8 +118,8 @@ func (h *Bidding) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if errors.Cause(err) != sql.ErrNoRows {
-		if bid.Value == 0 {
-			JSON(w, http.StatusInternalServerError, "Your bid value can't be 0")
+		if bid.Value <= 0 {
+			JSON(w, http.StatusInternalServerError, "Your bid value can't be less than or 0")
 			return
 		}
 
