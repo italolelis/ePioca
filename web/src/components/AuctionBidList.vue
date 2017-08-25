@@ -12,7 +12,8 @@
 </template>
 
 <script>
-import { getBidsByAuction } from '@/api/auction'
+import { getBidsByAuctionAndThreshold } from '@/api/auction'
+import ws from '@/api/ws'
 import AuctionBid from '@/components/AuctionBid'
 
 export default {
@@ -38,20 +39,27 @@ export default {
     },
 
     created() {
-        getBidsByAuction(this.auctionId, false)
-            .then(res => {
-                this.bids = res.data.sort((a, b) => {
-                    if (a.value < b.value) {
-                        return -1
-                    }
+        this.loadBids()
+        ws.registerFor('bid_created', this.loadBids)
+    },
 
-                    if (a.value > b.value) {
-                        return 1
-                    }
+    methods: {
+        loadBids() {
+            getBidsByAuctionAndThreshold(this.auctionId, this.threshold)
+                .then(({ data }) => {
+                    this.bids = data.sort((a, b) => {
+                        if (a.value < b.value) {
+                            return -1
+                        }
 
-                    return 0
+                        if (a.value > b.value) {
+                            return 1
+                        }
+
+                        return 0
+                    })
                 })
-            })
+        }
     }
 }
 </script>

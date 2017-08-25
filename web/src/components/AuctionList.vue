@@ -15,7 +15,7 @@
 
 <script>
     import AuctionListItem from '@/components/AuctionListItem'
-    import axios from 'axios';
+    import { getAuctionsByStatus } from '@/api/auction';
     import config from '@/config'
 
     export default {
@@ -36,15 +36,14 @@
         },
 
         mounted() {
-            this.getResponseFrom(`auctions?s=${this.filter}`)
+            this.loadAuctions()
         },
 
         methods: {
-            getResponseFrom(url) {
-                axios.get(`${config.api.uri}/${url}`)
-                     .then(response => {
-                         this.auctions = response.data
-                     })
+            loadAuctions() {
+                getAuctionsByStatus(this.filter)
+                    .then(({ data }) => this.auctions = data)
+                    .catch(err => console.error(err))
             }
         }
     }

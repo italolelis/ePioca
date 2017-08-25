@@ -8,6 +8,7 @@ export default {
     },
 
     service: {
-        uri: 'http://localhost:8115'
+        uri: 'http://localhost:8115',
+        ws:  'ws://localhost:8115/ws',
     }
 }

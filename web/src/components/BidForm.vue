@@ -81,7 +81,7 @@ export default {
 
     computed: {
         thresholdQty() {
-            return this.qty / 100 * this.threshold
+            return parseInt(this.qty / 100 * this.threshold, 10)
         },
     },
 
