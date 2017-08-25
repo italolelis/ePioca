@@ -59,6 +59,7 @@ import AuctionBidList from '@/components/AuctionBidList'
 import BidForm from '@/components/BidForm'
 import EpiocaCountdown from '@/components/EpiocaCountdown'
 import LowBidList from '@/components/LowBidList'
+import { registerFor } from '@/api/ws'
 
 export default {
     components: {
@@ -87,11 +88,18 @@ export default {
         },
 
         endDate() {
-            return moment(this.auction.start_date).add(this.auction.duration, 's').format()
+            this.getEndDate();
+            registerFor('auction_time_changed', this.getEndDate())
         },
 
         auctionId() {
             return this.$route.params.id
+        }
+    },
+
+    methods: {
+        getEndDate() {
+            return moment(this.auction.start_date).add(this.auction.duration, 's').format()
         }
     },
 
