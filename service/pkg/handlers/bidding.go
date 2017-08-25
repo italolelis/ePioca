@@ -35,7 +35,16 @@ func (h *Bidding) ShowByAuction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bids, err := h.repo.FindByAuction(id)
+	threshold := r.URL.Query().Get("threshold")
+
+	var bids bid.Bids
+
+	if threshold == "" {
+		bids, err = h.repo.FindByAuction(id)
+	} else {
+		bids, err = h.repo.FindByAuctionAndQuery(id, map[string]interface{}{"threshold": threshold})
+	}
+
 	if err != nil {
 		JSON(w, http.StatusInternalServerError, "Failed during searching latest bids")
 		return
