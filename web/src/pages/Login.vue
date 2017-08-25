@@ -90,7 +90,7 @@ export default {
                     setUserRole(data.user_data.metadata.roles)
                     this.$router.push(redirectTo)
                 })
-                // .catch(() => this.showLoginError = true)
+                .catch(() => this.showLoginError = true)
         }
     }
 }
