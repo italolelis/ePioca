@@ -50,6 +50,10 @@ type Auction struct {
 	PriceIncrement float32       `json:"price_increment" db:"price_increment"`
 }
 
+func (a *Auction) TimeRemaining() time.Duration {
+	return a.StartDate.Sub(time.Now()) + a.Duration*time.Second
+}
+
 // NewAuction creates a new instance of auction
 func NewAuction(id uuid.UUID) *Auction {
 	return &Auction{ID: id}
