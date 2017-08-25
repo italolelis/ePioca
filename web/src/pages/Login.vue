@@ -42,6 +42,11 @@
                             <select class="form-control" v-model="country" required>
                                 <option value="us" selected>US</option>
                                 <option value="de">DE</option>
+                                <option value="uk">UK</option>
+                                <option value="be">BE</option>
+                                <option value="ca">CA</option>
+                                <option value="ch">CH</option>
+                                <option value="au">AU</option>
                             </select>
                         </div>
                     </div>
