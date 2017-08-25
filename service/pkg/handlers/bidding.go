@@ -10,6 +10,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/italolelis/epioca/service/pkg/domain/auction"
 	"github.com/italolelis/epioca/service/pkg/domain/bid"
+	"github.com/italolelis/epioca/service/pkg/hub"
 	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
 	log "github.com/sirupsen/logrus"
@@ -19,11 +20,12 @@ import (
 type Bidding struct {
 	repo        bid.Repository
 	auctionRepo auction.Repository
+	wsHub       *hub.Hub
 }
 
 // NewBidding creates a new instance of Bidding
-func NewBidding(repo bid.Repository, auctionRepo auction.Repository) *Bidding {
-	return &Bidding{repo, auctionRepo}
+func NewBidding(repo bid.Repository, auctionRepo auction.Repository, wsHub *hub.Hub) *Bidding {
+	return &Bidding{repo, auctionRepo, wsHub}
 }
 
 // ShowByAuction handler to list biddings for an auction
@@ -130,12 +132,10 @@ func (h *Bidding) Create(w http.ResponseWriter, r *http.Request) {
 		return
 
 	}
-	log.Infof("%+v", lowestBids)
+
 	foundLowest := false
 	for _, b := range lowestBids {
-		log.Infof("Lowest bid: T: %v V: %v New bid: T: %v, V:%v", b.Threshold, b.Value, bid.Threshold, bid.Value)
 		if b.Threshold == bid.Threshold && b.Value < bid.Value {
-			log.Info("FOUND")
 			foundLowest = true
 		}
 	}
@@ -152,6 +152,7 @@ func (h *Bidding) Create(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	h.wsHub.Broadcast <- hub.Message(bid)
 	w.Header().Set("Location", fmt.Sprintf("/auctions/%s/bids", auctionID))
 	w.WriteHeader(http.StatusCreated)
 }

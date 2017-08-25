@@ -11,6 +11,7 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/italolelis/epioca/service/pkg/config"
 	"github.com/italolelis/epioca/service/pkg/handlers"
+	"github.com/italolelis/epioca/service/pkg/hub"
 	"github.com/italolelis/epioca/service/pkg/migrations"
 	"github.com/italolelis/epioca/service/pkg/repo"
 	"github.com/jmoiron/sqlx"
@@ -96,8 +97,14 @@ func initRouter() chi.Router {
 }
 
 func initAuctionRoutes(r chi.Router, db *sqlx.DB) {
+	wsHub := hub.New()
+	go wsHub.Run()
+	r.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		hub.ServeWs(wsHub, w, r)
+	})
+
 	handler := handlers.NewAuction(repo.NewAuction(db))
-	bidHandler := handlers.NewBidding(repo.NewBidRepo(db), repo.NewAuction(db))
+	bidHandler := handlers.NewBidding(repo.NewBidRepo(db), repo.NewAuction(db), wsHub)
 
 	r.Route("/auctions", func(r chi.Router) {
 		r.Get("/", handler.Index)
