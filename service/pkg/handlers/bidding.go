@@ -118,15 +118,15 @@ func (h *Bidding) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if errors.Cause(err) != sql.ErrNoRows {
-		if bid.Value <= 0 {
-			JSON(w, http.StatusInternalServerError, "Your bid value can't be less than or 0")
-			return
-		}
-
 		if latestBid.Threshold == bid.Threshold && latestBid.Value <= bid.Value {
 			JSON(w, http.StatusInternalServerError, "Your bid value should be less than previous one")
 			return
 		}
+	}
+
+	if bid.Value <= 0 {
+		JSON(w, http.StatusInternalServerError, "Your bid value can't be less than or 0")
+		return
 	}
 
 	if auction.MaxPrice < bid.Value {
