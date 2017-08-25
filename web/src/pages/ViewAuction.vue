@@ -83,7 +83,7 @@ export default {
         },
 
         scheduledDate() {
-            return moment(this.auction.startDate).format('dddd, MMMM Do YYYY, h:mm:ss a')
+            return moment(this.auction.start_date).format('dddd, MMMM Do YYYY, h:mm:ss a')
         },
 
         endDate() {
