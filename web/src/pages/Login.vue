@@ -38,7 +38,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                            <div class="input-group-addon"><i class="fa fa-key"></i></div>
+                            <div class="input-group-addon"><i class="fa fa-globe"></i></div>
                             <select class="form-control" v-model="country" required>
                                 <option value="us" selected>US</option>
                                 <option value="de">DE</option>
@@ -87,10 +87,16 @@ export default {
                     setAccessToken(data.access_token)
                     setUserId(data.user_data.id)
                     setUserName(data.user_data.username)
-                    setUserRole(data.user_data.metadata.roles)
+                    setUserRole(data.user_data.metadata.roles || [])
                     this.$router.push(redirectTo)
                 })
-                // .catch(() => this.showLoginError = true)
+                .catch((err) => {
+                    if (err.response && err.response.status == 401) 
+                        this.showLoginError = true
+                    else {
+                        throw err
+                    }
+                })
         }
     }
 }

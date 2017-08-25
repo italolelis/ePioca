@@ -47,6 +47,10 @@
 
             </div>
         </article>
+
+        <router-link class="btn btn-block" :to="{ name: 'Dashboard' }">
+            &larr; Back home
+        </router-link>
     </section>
 </template>
 
@@ -59,6 +63,7 @@ import AuctionBidList from '@/components/AuctionBidList'
 import BidForm from '@/components/BidForm'
 import EpiocaCountdown from '@/components/EpiocaCountdown'
 import LowBidList from '@/components/LowBidList'
+import { registerFor } from '@/api/ws'
 
 export default {
     components: {
@@ -73,7 +78,7 @@ export default {
             auction: {
                 ingredient: {}
             },
-            lowestBids: [],
+            lowestBids: []
         }
     },
 
@@ -83,11 +88,11 @@ export default {
         },
 
         scheduledDate() {
-            return moment(this.auction.startDate).format('dddd, MMMM Do YYYY, h:mm:ss a')
+            return moment(this.auction.start_date).format('dddd, MMMM Do YYYY, h:mm:ss a')
         },
 
         endDate() {
-            return moment(this.auction.startDate).add(this.auction.duration, 's').format()
+            return moment(this.auction.start_date).add(this.auction.duration, 's').format()
         },
 
         auctionId() {
@@ -95,7 +100,15 @@ export default {
         }
     },
 
+    methods: {
+        timeChanged({ data }) {
+            this.auction.duration = data.duration
+        }
+    },
+
     created() {
+        registerFor('auction_time_changed', this.timeChanged)
+
         getAuctionById(this.auctionId)
             .then(res => this.auction = res.data)
             .catch(err => console.error(err))

@@ -2,9 +2,10 @@
     <router-link
         :to="{ name: 'View Auction', params: { id: id }}">
         <b-list-group-item>
-            <span>{{ ingredient }}</span>
-            <span>{{ qty }}</span>
-            <p v-if="type == 'running'">{{ timeRemaining }} remaining</p>
+            <strong>{{ ingredient }}</strong><span class="pull-right">&times;{{ qty }}</span>
+
+            <p v-if="type === 'running'">{{ timeRemaining }} remaining</p>
+            <p v-if="type === 'scheduled'">Starts in {{ timeToStart }}</p>
         </b-list-group-item>
     </router-link>
 </template>
@@ -45,9 +46,20 @@ export default {
             const end = moment(this.startTime).add(this.duration, 's')
 
             return moment.duration(now.diff(end)).humanize()
+        },
+
+        timeToStart() {
+            const now = moment()
+            const start = moment(this.startTime)
+
+            return moment.duration(now.diff(start)).humanize()
         }
     }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+p {
+    margin: 1rem 0 0 0;
+}
+</style>

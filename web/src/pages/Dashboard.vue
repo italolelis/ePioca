@@ -2,72 +2,44 @@
     <section>
 
         <div class="row" v-if="userRole === 'buyer'">
-            <router-link :to="{ name: 'Create Auction' }" class="btn btn-primary">
-                Create Auction
-            </router-link>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4" v-for="type in types">
-                <p class="text-center">
-                    <img :src="type.image">
-                </p>
-
-                <h3 class="text-center">{{ type.filter | capitalize }} Auctions</h3>
-
-                <auction-list :filter="type.filter"></auction-list>
+            <div class="col">
+                <router-link :to="{ name: 'Create Auction' }" class="btn btn-success btn-lg btn-block">
+                    Create Auction
+                </router-link>
             </div>
         </div>
+
+        <b-card-group deck>
+            <auction-list :filter="type" :key="type" v-for="type in types"></auction-list>
+        </b-card-group>
     </section>
 </template>
 
 <script>
-    import AuctionList from '@/components/AuctionList'
-    import { getUserRole } from '@/api'
+import AuctionList from '@/components/AuctionList'
+import { getUserRole } from '@/api'
 
-    export default {
-        components: {
-            AuctionList
-        },
+export default {
+    components: {
+        AuctionList
+    },
 
-        filters: {
-            capitalize: function (value) {
-                if (!value) return ''
-                value = value.toString()
-                return value.charAt(0).toUpperCase() + value.slice(1)
-            }
-        },
+    computed: {
+        userRole() {
+            return getUserRole()
+        }
+    },
 
-        computed: {
-            userRole() {
-                return getUserRole()
-            }
-        },
-
-        data() {
-            return {
-                types : [
-                    {
-                        'filter' : 'running',
-                        'image': 'https://cdn0.iconfinder.com/data/icons/shopping-and-retail/80/Shopping_retail-06-512.png'
-                    },
-                    {
-                        'filter' : 'scheduled',
-                        'image': 'https://cdn4.iconfinder.com/data/icons/ios7-line/512/Timetable.png'
-                    },
-                    {
-                        'filter' : 'completed',
-                        'image': 'https://cdn0.iconfinder.com/data/icons/flat-security-icons/512/tick.png'
-                    }
-                ]
-            }
+    data() {
+        return {
+            types : [ 'scheduled', 'running', 'completed' ]
         }
     }
+}
 </script>
 
 <style scoped>
-img {
-    width: 50%;
-    margin: 2rem auto 1rem auto;
+.card-deck {
+    margin-top: 2rem;
 }
 </style>
