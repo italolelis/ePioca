@@ -50,16 +50,12 @@
             </div>
 
             <div class="col">
-                <div>
-                    <count-down :date="endDate"></count-down>
-                </div>
-
                 <div v-if="auction.status === 'scheduled'">
-                    Scheduled for...
+                    Scheduled for {{ scheduledDate }}
                 </div>
 
-                <div v-if="auction.status === 'completed'">
-                    Finished at...
+                <div v-else>
+                    <count-down :end-date="endDate"></count-down>
                 </div>
             </div>
 
@@ -98,6 +94,10 @@
         computed: {
             isBuyer() {
                 return getUserRole() == 'supplier'
+            },
+
+            scheduledDate() {
+                return moment(this.auction.startDate).format('dddd, MMMM Do YYYY, h:mm:ss a')
             },
 
             endDate() {
