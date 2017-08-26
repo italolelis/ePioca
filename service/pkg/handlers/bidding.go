@@ -206,6 +206,19 @@ func (h *Bidding) Finish(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	auction, err := h.auctionRepo.FindByID(id)
+	if err != nil {
+		JSON(w, http.StatusNotFound, "Failed to find the auction")
+		return
+	}
+
+	auction.Duration = time.Duration(0)
+	err = h.auctionRepo.Add(auction)
+	if err != nil {
+		JSON(w, http.StatusBadRequest, "Failed to update the auction")
+		return
+	}
+
 	h.wsHub.Broadcast <- hub.Message{Type: "auction_finished", Data: id}
 	JSON(w, http.StatusOK, id)
 }
