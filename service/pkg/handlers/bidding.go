@@ -196,3 +196,16 @@ func (h *Bidding) Winners(w http.ResponseWriter, r *http.Request) {
 
 	JSON(w, http.StatusOK, winningBids)
 }
+
+// Finish handler to show the lowest bidding for an auction
+func (h *Bidding) Finish(w http.ResponseWriter, r *http.Request) {
+	id, err := uuid.FromString(chi.URLParam(r, "auctionId"))
+	if err != nil {
+		log.WithError(err).Warn("Failed to parse the UUID")
+		JSON(w, http.StatusBadRequest, "The provided auction ID is invalid")
+		return
+	}
+
+	h.wsHub.Broadcast <- hub.Message{Type: "auction_finished", Data: id}
+	JSON(w, http.StatusOK, id)
+}
