@@ -1,6 +1,6 @@
 export default {
     gateway: {
-        uri: process.env.GW_URL,
+        uri: process.env.GW_URI,
     },
 
     service: {

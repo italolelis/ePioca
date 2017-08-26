@@ -1,7 +1,7 @@
 import client from '@/api'
-import { gateway } from '@/config'
+import config from '@/config'
 
-const TAPIOCA_URI = `${gateway.uri}/scm`
+const TAPIOCA_URI = `${config.gateway.uri}/scm`
 
 export const getIngredientsForWeekAndDc = (week, dc) =>
     client.get(`${TAPIOCA_URI}/product-summaries`, {
