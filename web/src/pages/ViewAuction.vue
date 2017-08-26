@@ -7,6 +7,7 @@
                 :status="auction.status"
                 :week="auction.week"
                 :qty="auction.qty"
+                :start-price="auction.max_price"
             ></auction-header>
 
             <div class="col-md-4">
@@ -76,10 +77,12 @@ export default {
             auction: {
                 ingredient: {
                     name: '',
-                    sku: ''
+                    sku: '',
                 },
                 week: '',
-                qty: 0
+                qty: 0,
+                max_price: 10,
+                status: '',
             },
         }
     },

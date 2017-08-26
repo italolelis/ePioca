@@ -8,6 +8,7 @@
         <p class="lead">
             Auction to supply {{ qty }} units of {{ sku }} in {{ week }}
         </p>
+        <p class="text-muted" v-if="startPrice">Start price: ${{ startPrice }} / unit</p>
     </header>
 </template>
 
@@ -33,6 +34,9 @@ export default {
         week: {
             type: String,
             required: true
+        },
+        startPrice: {
+            type: Number
         }
     }
 }
