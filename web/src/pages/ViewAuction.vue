@@ -4,7 +4,7 @@
             <auction-header class="col"
                 :ingredient="auction.ingredient.name"
                 :sku="auction.ingredient.sku"
-                status="Completed"
+                :status="auction.status"
                 :week="auction.week"
                 :qty="auction.qty"
             ></auction-header>
@@ -105,11 +105,16 @@ export default {
     methods: {
         timeChanged({ data }) {
             this.auction.duration = data.duration
+        },
+
+        redirectToWinners() {
+            this.$router.push({ name: 'Winners', params: { id: this.auctionId } })
         }
     },
 
     created() {
         registerFor('auction_time_changed', this.timeChanged)
+        registerFor('auction_finished', this.redirectToWinners)
 
         getAuctionById(this.auctionId)
             .then(({ data }) => {
